@@ -1,0 +1,11 @@
+#logo {
+    color: white;
+    font-weight: 600;
+    font-size: 35px;
+}
+
+.hoover-background {
+    background-image: url("../../assets/images/configuration-background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
