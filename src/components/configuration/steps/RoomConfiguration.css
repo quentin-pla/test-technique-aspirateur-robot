@@ -1,0 +1,18 @@
+.room-grid {
+    max-height: 400px;
+    max-width: 600px;
+}
+
+.room-grid .room-grid-row {
+    display: flex;
+    width: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.room-grid .room-grid-row .room-grid-cell {
+    background-color: blue;
+    height: 20px;
+    width: 20px;
+    margin: 1px;
+}

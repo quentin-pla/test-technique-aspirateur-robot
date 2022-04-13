@@ -4,8 +4,22 @@
     font-size: 35px;
 }
 
-.hoover-background {
-    background-image: url("../../assets/images/configuration-background.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+.fullscreen-window {
+    height: 100%;
+    width: 100%;
+}
+
+.main-container {
+    width: 200%;
+    height: 100%;
+    display: flex;
+    transition: all 0.8s;
+}
+
+.step-start {
+    transform: translate(0);
+}
+
+.step-gridselection {
+    transform: translate(-50%);
 }
