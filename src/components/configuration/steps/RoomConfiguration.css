@@ -1,5 +1,4 @@
 .room-grid {
-    border: 1px solid red;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,7 +6,22 @@
     height: 100%;
     width: 100%;
     max-height: 400px;
-    max-width: 600px;
+    max-width: 500px;
+}
+
+.room-grid-y-label {
+    margin-bottom: 5px;
+}
+
+.room-grid-x-label {
+    position: absolute;
+    left: -50px;
+    top: calc(50% - 13px);
+}
+
+.room-grid-delimiter {
+    position: relative;
+    border: 3px black solid;
 }
 
 .room-grid .room-grid-row {
@@ -18,7 +32,11 @@
 }
 
 .room-grid .room-grid-row .room-grid-cell {
-    background-color: blue;
     height: 100%;
-    margin: 1px;
+    border: 1px darkgray dashed;
+}
+
+.btn-grid-size, .btn-grid-size:hover, .btn-grid-size:active, .btn-grid-size:focus, .btn-grid-size:active:focus {
+    background-color: white;
+    color: black;
 }

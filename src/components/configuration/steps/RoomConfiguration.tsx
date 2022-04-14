@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from "react";
 import "./RoomConfiguration.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {ArrowLeftCircle} from "react-bootstrap-icons";
+import {ArrowLeftCircle, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
 
 interface IRoomConfigurationProps {
 	showNextStep: () => void,
@@ -12,8 +12,8 @@ interface IRoomConfigurationProps {
  * Room configuration
  */
 const RoomConfiguration = (props: IRoomConfigurationProps) => {
-	const [_rows, _setRows] = useState<number>(1);
-	const [_columns, _setColumns] = useState<number>(1);
+	const [_rows, _setRows] = useState<number>(2);
+	const [_columns, _setColumns] = useState<number>(3);
 
 	/**
 	 * Add a row
@@ -31,8 +31,8 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	 * @param columns number of columns
 	 */
 	const getCellSize = (rows: number, columns: number): string => {
-		const height = ((400 - (rows * 2)) / rows);
-		const width = ((600 - (columns * 2)) / columns);
+		const height = (400 / rows);
+		const width = (500 / columns);
 		const size = width > height ? height : width;
 		return size + "px";
 	}
@@ -47,25 +47,35 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 							<h2>Configure your room</h2>
 						</Col>
 						<Col className={"col-12 room-grid"}>
-							{Array.from(Array(_rows).keys()).map(row => (
-								<div key={"row-" + row} className={"room-grid-row"}>
-									{Array.from(Array(_columns).keys()).map(column => (
-										<div key={"columns-" + column} className={"room-grid-cell"}
-										     style={{width: cellSize, height: cellSize}}>
-										</div>
-									))}
+							<div className={"room-grid-y-label"}>{_columns}m</div>
+							<div className={"room-grid-delimiter"}>
+								<div className={"room-grid-x-label"}>
+									{_rows}m
 								</div>
-							))}
+								{Array.from(Array(_rows).keys()).map(row => (
+									<div key={"row-" + row} className={"room-grid-row"}>
+										{Array.from(Array(_columns).keys()).map(column => (
+											<div key={"column-" + column} className={"room-grid-cell"}
+											     style={{width: cellSize, height: cellSize}}>
+											</div>
+										))}
+									</div>
+								))}
+							</div>
 						</Col>
 						<Col className={"col-12 d-flex justify-content-center align-items-center gap-3"}>
-							<Button onClick={addColumn}>
-								<div className={"d-flex justify-content-center align-items-center"}>
+							<Button className={"btn-grid-size"} onClick={addColumn}>
+								<div className={"d-flex justify-content-center align-items-center gap-3"}>
+									<PlusCircleFill size={20}/>
 									Width
+									<DashCircleFill size={20}/>
 								</div>
 							</Button>
-							<Button onClick={addRow}>
-								<div className={"d-flex justify-content-center align-items-center"}>
+							<Button className={"btn-grid-size"} onClick={addRow}>
+								<div className={"d-flex justify-content-center align-items-center gap-3"}>
+									<PlusCircleFill size={20}/>
 									Length
+									<DashCircleFill size={20}/>
 								</div>
 							</Button>
 						</Col>
