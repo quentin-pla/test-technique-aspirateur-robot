@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import "./RoomConfiguration.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowLeftCircle} from "react-bootstrap-icons";
@@ -12,6 +12,13 @@ interface IRoomConfigurationProps {
  * Room configuration
  */
 const RoomConfiguration = (props: IRoomConfigurationProps) => {
+	const [rows, setRows] = useState(1);
+	const [columns, setColumns] = useState(1);
+
+	const addRow = () => setRows(prevRows => prevRows + 1);
+
+	const addColumn = () => setColumns(prevColumns => prevColumns + 1);
+
 	return (
 		<div className={"fullscreen-window"}>
 			<Container fluid className={"h-100"}>
@@ -20,21 +27,33 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 						<h2>Configure your room</h2>
 					</Col>
 					<Col className={"col-12 room-grid"}>
-						<div className={"room-grid-row"}>
-							<div className={"room-grid-cell"}/>
-							<div className={"room-grid-cell"}/>
-							<div className={"room-grid-cell"}/>
-						</div>
-						<div className={"room-grid-row"}>
-							<div className={"room-grid-cell"}/>
-							<div className={"room-grid-cell"}/>
-							<div className={"room-grid-cell"}/>
-						</div>
-						<div className={"room-grid-row"}>
-							<div className={"room-grid-cell"}/>
-							<div className={"room-grid-cell"}/>
-							<div className={"room-grid-cell"}/>
-						</div>
+						{Array.from(Array(rows).keys()).map(row => {
+							return (
+								<div key={"row-" + row} className={"room-grid-row"}>
+									{Array.from(Array(columns).keys()).map(column => {
+										const columnSize = (((columns > rows ? 600 : 400) - (columns * 2)) / columns) + "px";
+										return (
+											<div key={"columns-" + column}
+											     className={"room-grid-cell"}
+											     style={{width: columnSize, height: columnSize}}
+											/>
+										)
+									})}
+								</div>
+							)
+						})}
+					</Col>
+					<Col className={"col-12 d-flex justify-content-center align-items-center gap-3"}>
+						<Button onClick={addColumn}>
+							<div className={"d-flex justify-content-center align-items-center"}>
+								Width
+							</div>
+						</Button>
+						<Button onClick={addRow}>
+							<div className={"d-flex justify-content-center align-items-center"}>
+								Length
+							</div>
+						</Button>
 					</Col>
 					<Col className={"col-12 d-flex justify-content-center align-items-center"}>
 						<Button onClick={props.showPreviousStep}>
