@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from "react";
 import "./RoomConfiguration.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {ArrowLeftCircle, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
+import {ArrowLeft, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
 
 interface IRoomConfigurationProps {
 	showNextStep: () => void,
@@ -16,75 +16,80 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	const [_columns, _setColumns] = useState<number>(3);
 
 	/**
-	 * Add a row
+	 * Add a number of rows
 	 */
-	const addRow = () => _setRows(_prevRows => _prevRows + 1);
+	const addRow = (rowsToAdd: number) => () => {
+		_setRows(_prevRows => {
+			let newValue = _prevRows + rowsToAdd;
+			if (newValue > 100) newValue = 100;
+			else if (newValue < 1) newValue = 1;
+			return newValue;
+		});
+	}
 
 	/**
-	 * Add a column
+	 * Add a number of columns
 	 */
-	const addColumn = () => _setColumns(_prevColumns => _prevColumns + 1);
+	const addColumn = (columnsToAdd: number) => () => {
+		_setColumns(_prevColumns => {
+			let newValue = _prevColumns + columnsToAdd;
+			if (newValue > 100) newValue = 100;
+			else if (newValue < 1) newValue = 1;
+			return newValue;
+		});
+	}
 
 	/**
 	 * Get cell size
 	 * @param rows number of rows
 	 * @param columns number of columns
 	 */
-	const getCellSize = (rows: number, columns: number): string => {
+	const getCellSize = (rows: number, columns: number): number => {
 		const height = (400 / rows);
 		const width = (500 / columns);
-		const size = width > height ? height : width;
-		return size + "px";
+		return width > height ? height : width;
 	}
 
 	return useMemo(() => {
 		const cellSize = getCellSize(_rows, _columns);
 		return (
 			<div className={"fullscreen-window"}>
-				<Container fluid className={"h-100"}>
-					<Row className={"h-100 d-flex align-items-center justify-content-center"}>
-						<Col className={"col-12 text-center"}>
+				<Button className={"go-back-btn"} onClick={props.showPreviousStep}>
+					<ArrowLeft size={30}/>
+				</Button>
+				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
+					<Row className={"d-flex align-items-center justify-content-center"}>
+						<Col className={"col-12 text-center mb-5"}>
 							<h2>Configure your room</h2>
 						</Col>
 						<Col className={"col-12 room-grid"}>
-							<div className={"room-grid-y-label"}>{_columns}m</div>
+							<div className={"room-grid-y-label"}>
+								<Button className={"btn-grid-size"}>
+									<div className={"d-flex justify-content-center align-items-center gap-3"}>
+										<DashCircleFill onClick={addColumn(-1)} className={"minus-btn"} size={20}/>
+										{_columns}m
+										<PlusCircleFill onClick={addColumn(1)} className={"plus-btn"} size={20}/>
+									</div>
+								</Button>
+							</div>
 							<div className={"room-grid-delimiter"}>
 								<div className={"room-grid-x-label"}>
-									{_rows}m
+									<Button className={"btn-grid-size row-btn"}>
+										<div
+											className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
+											<PlusCircleFill onClick={addRow(1)} className={"plus-btn"} size={20}/>
+											{_rows}m
+											<DashCircleFill onClick={addRow(-1)} className={"minus-btn"} size={20}/>
+										</div>
+									</Button>
 								</div>
-								{Array.from(Array(_rows).keys()).map(row => (
-									<div key={"row-" + row} className={"room-grid-row"}>
-										{Array.from(Array(_columns).keys()).map(column => (
-											<div key={"column-" + column} className={"room-grid-cell"}
-											     style={{width: cellSize, height: cellSize}}>
-											</div>
-										))}
+								<div className={"fill-absolute overflow-hidden"}>
+									<div className={"room-grid-center-label"}>
+										My room
 									</div>
-								))}
+								</div>
+								<div style={{width: (cellSize * _columns) + "px", height: (cellSize * _rows) + "px"}}/>
 							</div>
-						</Col>
-						<Col className={"col-12 d-flex justify-content-center align-items-center gap-3"}>
-							<Button className={"btn-grid-size"} onClick={addColumn}>
-								<div className={"d-flex justify-content-center align-items-center gap-3"}>
-									<PlusCircleFill size={20}/>
-									Width
-									<DashCircleFill size={20}/>
-								</div>
-							</Button>
-							<Button className={"btn-grid-size"} onClick={addRow}>
-								<div className={"d-flex justify-content-center align-items-center gap-3"}>
-									<PlusCircleFill size={20}/>
-									Length
-									<DashCircleFill size={20}/>
-								</div>
-							</Button>
-						</Col>
-						<Col className={"col-12 d-flex justify-content-center align-items-center"}>
-							<Button onClick={props.showPreviousStep}>
-								<div className={"d-flex justify-content-center align-items-center"}>
-									<ArrowLeftCircle className={"me-2"} size={18}/> Back
-								</div>
-							</Button>
 						</Col>
 					</Row>
 				</Container>

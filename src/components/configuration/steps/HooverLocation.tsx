@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import "./RoomConfiguration.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {ArrowLeftCircle} from "react-bootstrap-icons";
+import {ArrowLeft, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
 
 interface IHooverLocationProps {
 	showNextStep: () => void,
@@ -12,60 +12,83 @@ interface IHooverLocationProps {
  * Room configuration
  */
 const HooverLocation = (props: IHooverLocationProps) => {
-	const [rows, setRows] = useState(1);
-	const [columns, setColumns] = useState(1);
+	const [_rows, _setRows] = useState<number>(2);
+	const [_columns, _setColumns] = useState<number>(3);
 
-	const addRow = () => setRows(prevRows => prevRows + 1);
+	/**
+	 * Add a number of rows
+	 */
+	const addRow = (count: number) => () => _setRows(_prevRows => _prevRows + count);
 
-	const addColumn = () => setColumns(prevColumns => prevColumns + 1);
+	/**
+	 * Add a number of columns
+	 */
+	const addColumn = (count: number) => () => _setColumns(_prevColumns => _prevColumns + count);
 
-	return (
-		<div className={"fullscreen-window"}>
-			<Container fluid className={"h-100"}>
-				<Row className={"h-100 d-flex align-items-center justify-content-center"}>
-					<Col className={"col-12 text-center"}>
-						<h2>Configure your room</h2>
-					</Col>
-					<Col className={"col-12 room-grid"}>
-						{Array.from(Array(rows).keys()).map(row => {
-							return (
-								<div key={"row-" + row} className={"room-grid-row"}>
-									{Array.from(Array(columns).keys()).map(column => {
-										const columnSize = (((columns > rows ? 600 : 400) - (columns * 2)) / columns) + "px";
-										return (
-											<div key={"columns-" + column}
-											     className={"room-grid-cell"}
-											     style={{width: columnSize, height: columnSize}}
-											/>
-										)
-									})}
+	/**
+	 * Get cell size
+	 * @param rows number of rows
+	 * @param columns number of columns
+	 */
+	const getCellSize = (rows: number, columns: number): string => {
+		const height = (400 / rows);
+		const width = (500 / columns);
+		const size = width > height ? height : width;
+		return size + "px";
+	}
+
+	return useMemo(() => {
+		const cellSize = getCellSize(_rows, _columns);
+		return (
+			<div className={"fullscreen-window"}>
+				<Button className={"go-back-btn"} onClick={props.showPreviousStep}>
+					<ArrowLeft size={30}/>
+				</Button>
+				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
+					<Row className={"d-flex align-items-center justify-content-center"}>
+						<Col className={"col-12 text-center mb-5"}>
+							<h2>Configure your room</h2>
+						</Col>
+						<Col className={"col-12 room-grid"}>
+							<div className={"room-grid-y-label"}>
+								<Button className={"btn-grid-size"}>
+									<div className={"d-flex justify-content-center align-items-center gap-3"}>
+										<PlusCircleFill onClick={addColumn(1)} className={"plus-btn"} size={20}/>
+										{_columns}m
+										<DashCircleFill onClick={addColumn(-1)} className={"minus-btn"} size={20}/>
+									</div>
+								</Button>
+							</div>
+							<div className={"room-grid-delimiter"}>
+								<div className={"room-grid-x-label"}>
+									<Button className={"btn-grid-size row-btn"}>
+										<div
+											className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
+											<PlusCircleFill onClick={addRow(1)} className={"plus-btn"} size={20}/>
+											{_rows}m
+											<DashCircleFill onClick={addRow(-1)} className={"minus-btn"} size={20}/>
+										</div>
+									</Button>
 								</div>
-							)
-						})}
-					</Col>
-					<Col className={"col-12 d-flex justify-content-center align-items-center gap-3"}>
-						<Button onClick={addColumn}>
-							<div className={"d-flex justify-content-center align-items-center"}>
-								Width
+								<div className={"room-grid-center-label"}>
+									My room
+								</div>
+								{Array.from(Array(_rows).keys()).map(row => (
+									<div key={"row-" + row} className={"room-grid-row"}>
+										{Array.from(Array(_columns).keys()).map(column => (
+											<div key={"column-" + column} className={"room-grid-cell"}
+											     style={{width: cellSize, height: cellSize}}>
+											</div>
+										))}
+									</div>
+								))}
 							</div>
-						</Button>
-						<Button onClick={addRow}>
-							<div className={"d-flex justify-content-center align-items-center"}>
-								Length
-							</div>
-						</Button>
-					</Col>
-					<Col className={"col-12 d-flex justify-content-center align-items-center"}>
-						<Button onClick={props.showPreviousStep}>
-							<div className={"d-flex justify-content-center align-items-center"}>
-								<ArrowLeftCircle className={"me-2"} size={18}/> Back
-							</div>
-						</Button>
-					</Col>
-				</Row>
-			</Container>
-		</div>
-	)
+						</Col>
+					</Row>
+				</Container>
+			</div>
+		)
+	}, [_rows, _columns]);
 }
 
 export default HooverLocation;

@@ -6,22 +6,37 @@
     height: 100%;
     width: 100%;
     max-height: 400px;
+    min-height: 400px;
     max-width: 500px;
+    min-width: 500px;
 }
 
 .room-grid-y-label {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .room-grid-x-label {
     position: absolute;
-    left: -50px;
-    top: calc(50% - 13px);
+    left: -60px;
+    top: calc(50% - 60px);
+}
+
+.room-grid-center-label {
+    position: absolute;
+    width: 120px;
+    height: 40px;
+    left: calc(50% - 60px);
+    top: calc(50% - 20px);
+    font-weight: 500;
+    font-size: 25px;
+    text-align: center;
 }
 
 .room-grid-delimiter {
     position: relative;
-    border: 3px black solid;
+    background-color: #a59689;
+    color: white;
+    border-radius: 15px;
 }
 
 .room-grid .room-grid-row {
@@ -29,14 +44,34 @@
     width: 100%;
     justify-content: center;
     align-items: center;
+    transition: width 2s, height 2s;
 }
 
 .room-grid .room-grid-row .room-grid-cell {
     height: 100%;
-    border: 1px darkgray dashed;
+    transition: width 2s, height 2s;
 }
 
-.btn-grid-size, .btn-grid-size:hover, .btn-grid-size:active, .btn-grid-size:focus, .btn-grid-size:active:focus {
+.btn-grid-size {
     background-color: white;
-    color: black;
+    color: #a59689;
+}
+
+.row-btn {
+    width: 46px;
+    height: 120px;
+}
+
+.btn-grid-size:hover, .btn-grid-size:active, .btn-grid-size:focus, .btn-grid-size:active:focus {
+    background-color: white;
+    color: #a59689;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+}
+
+.plus-btn, .minus-btn {
+    transition: transform 0.2s;
+}
+
+.plus-btn:hover, .minus-btn:hover {
+    transform: scale(1.3);
 }

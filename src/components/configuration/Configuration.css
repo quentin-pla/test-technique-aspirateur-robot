@@ -5,6 +5,7 @@
 }
 
 .fullscreen-window {
+    position: relative;
     height: 100%;
     width: 100%;
 }
@@ -22,4 +23,12 @@
 
 .step-gridselection {
     transform: translate(-50%);
+}
+
+.go-back-btn {
+    position: absolute;
+    top: calc(50% - 30px);
+    left: 30px;
+    width: 60px;
+    height: 60px;
 }
