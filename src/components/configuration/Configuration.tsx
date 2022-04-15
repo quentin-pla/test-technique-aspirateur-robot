@@ -16,7 +16,10 @@ export enum ConfigurationStep {
  */
 export interface IHooverConfiguration {
 	roomLength: number,
-	roomWidth: number
+	roomWidth: number,
+	xLocation: number,
+	yLocation: number,
+	angle: number
 }
 
 /**
@@ -27,13 +30,18 @@ const stepsOrder = [
 ]
 
 /**
+ * Default configuration
+ */
+const defaultConfiguration: IHooverConfiguration = {
+	roomLength: 5, roomWidth: 5, xLocation: 0, yLocation: 0, angle: 0
+}
+
+/**
  * Configuration
  */
 export const Configuration = () => {
 	const [_stepIndex, _setStepIndex] = useState<number>(0);
-	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>({
-		roomLength: 5, roomWidth: 5
-	});
+	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(defaultConfiguration);
 
 	/**
 	 * Show next step
@@ -75,5 +83,5 @@ export const Configuration = () => {
 					showPreviousStep={showPreviousStep}/>
 			</div>
 		)
-	}, [_stepIndex, _hooverConfiguration]);
+	}, [_stepIndex]);
 }

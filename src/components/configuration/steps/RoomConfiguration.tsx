@@ -20,8 +20,11 @@ let _actionInterval: NodeJS.Timer | undefined = undefined;
 const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
 
+	/**
+	 * On render
+	 */
 	useEffect(() => {
-		_setHooverConfiguration({...props.hooverConfiguration});
+		if (props.render) _setHooverConfiguration({...props.hooverConfiguration});
 	}, [props.render])
 
 	/**
