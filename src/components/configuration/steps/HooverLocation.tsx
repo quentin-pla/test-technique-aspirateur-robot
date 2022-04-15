@@ -1,7 +1,8 @@
 import React, {useMemo, useState} from "react";
 import "./RoomConfiguration.css";
+// import "./HooverLocation.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {ArrowLeft, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
+import {ArrowLeft} from "react-bootstrap-icons";
 
 interface IHooverLocationProps {
 	showNextStep: () => void,
@@ -47,32 +48,10 @@ const HooverLocation = (props: IHooverLocationProps) => {
 				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
 					<Row className={"d-flex align-items-center justify-content-center"}>
 						<Col className={"col-12 text-center mb-5"}>
-							<h2>Configure your room</h2>
+							<h2>Place hoover in the room</h2>
 						</Col>
 						<Col className={"col-12 room-grid"}>
-							<div className={"room-grid-y-label"}>
-								<Button className={"btn-grid-size"}>
-									<div className={"d-flex justify-content-center align-items-center gap-3"}>
-										<PlusCircleFill onClick={addColumn(1)} className={"plus-btn"} size={20}/>
-										{_columns}m
-										<DashCircleFill onClick={addColumn(-1)} className={"minus-btn"} size={20}/>
-									</div>
-								</Button>
-							</div>
 							<div className={"room-grid-delimiter"}>
-								<div className={"room-grid-x-label"}>
-									<Button className={"btn-grid-size row-btn"}>
-										<div
-											className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
-											<PlusCircleFill onClick={addRow(1)} className={"plus-btn"} size={20}/>
-											{_rows}m
-											<DashCircleFill onClick={addRow(-1)} className={"minus-btn"} size={20}/>
-										</div>
-									</Button>
-								</div>
-								<div className={"room-grid-center-label"}>
-									My room
-								</div>
 								{Array.from(Array(_rows).keys()).map(row => (
 									<div key={"row-" + row} className={"room-grid-row"}>
 										{Array.from(Array(_columns).keys()).map(column => (

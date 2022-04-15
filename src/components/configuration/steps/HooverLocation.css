@@ -1,0 +1,13 @@
+.room-grid-delimiter {
+    position: relative;
+    background-color: white;
+    color: white;
+    border: 3px solid black;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.room-grid .room-grid-row .room-grid-cell {
+    height: 100%;
+    border: 1px dashed darkgray;
+}
