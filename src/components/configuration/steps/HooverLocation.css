@@ -1,4 +1,4 @@
-.room-grid-delimiter {
+.location-grid .room-grid-delimiter {
     position: relative;
     background-color: white;
     color: white;
@@ -7,7 +7,7 @@
     overflow: hidden;
 }
 
-.room-grid .room-grid-row .room-grid-cell {
+.room-grid.location-grid .room-grid-row .room-grid-cell {
     height: 100%;
     border: 1px dashed darkgray;
 }

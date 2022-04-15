@@ -1,11 +1,14 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import "./RoomConfiguration.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
+import {IHooverConfiguration} from "../Configuration";
 
 interface IRoomConfigurationProps {
-	showNextStep: () => void,
-	showPreviousStep: () => void,
+	render: boolean,
+	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void,
+	showPreviousStep: (hooverConfiguration: IHooverConfiguration) => () => void,
+	hooverConfiguration: IHooverConfiguration
 }
 
 let _longPressTimeout: NodeJS.Timeout | undefined = undefined;
@@ -15,8 +18,11 @@ let _actionInterval: NodeJS.Timer | undefined = undefined;
  * Room configuration
  */
 const RoomConfiguration = (props: IRoomConfigurationProps) => {
-	const [_rows, _setRows] = useState<number>(5);
-	const [_columns, _setColumns] = useState<number>(5);
+	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
+
+	useEffect(() => {
+		_setHooverConfiguration({...props.hooverConfiguration});
+	}, [props.render])
 
 	/**
 	 * Start long press timeout (for plus/minus buttons)
@@ -74,7 +80,10 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	 * @param rowsToAdd number of rows to add
 	 */
 	const onAddRows = (rowsToAdd: number) => () => {
-		const action = () => _setRows(_prevRows => addRows(_prevRows, rowsToAdd));
+		const action = () => _setHooverConfiguration(prevConfiguration => ({
+			...prevConfiguration,
+			roomLength: addRows(prevConfiguration.roomLength, rowsToAdd)
+		}));
 		startLongPressTimeout(action);
 		action();
 	}
@@ -84,7 +93,10 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	 * @param columnsToAdd number of columns to add
 	 */
 	const onAddColumns = (columnsToAdd: number) => () => {
-		const action = () => _setColumns(_prevColumns => addColumns(_prevColumns, columnsToAdd));
+		const action = () => _setHooverConfiguration(prevConfiguration => ({
+			...prevConfiguration,
+			roomWidth: addColumns(prevConfiguration.roomWidth, columnsToAdd)
+		}));
 		startLongPressTimeout(action);
 		action();
 	}
@@ -101,14 +113,14 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	}
 
 	return useMemo(() => {
-		const cellSize = getCellSize(_rows, _columns);
+		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
 		return (
 			<div className={"fullscreen-window"} onMouseUp={resetTimeoutAndInterval}>
 				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
-					<Button className={"go-back-btn"} onClick={props.showPreviousStep}>
+					<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
 						<ArrowLeft size={30}/>
 					</Button>
-					<Button className={"go-next-btn"} onClick={props.showNextStep}>
+					<Button className={"go-next-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
 						<ArrowRight size={30}/>
 					</Button>
 					<Row className={"d-flex align-items-center justify-content-center"}>
@@ -121,7 +133,7 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 									<div className={"d-flex justify-content-center align-items-center gap-3"}>
 										<DashCircleFill onMouseDown={onAddColumns(-1)} className={"minus-btn"}
 										                size={20}/>
-										{_columns}m
+										{_hooverConfiguration.roomWidth}m
 										<PlusCircleFill onMouseDown={onAddColumns(1)} className={"plus-btn"} size={20}/>
 									</div>
 								</Button>
@@ -133,7 +145,7 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 											className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
 											<PlusCircleFill onMouseDown={onAddRows(1)} className={"plus-btn"}
 											                size={20}/>
-											{_rows}m
+											{_hooverConfiguration.roomLength}m
 											<DashCircleFill onMouseDown={onAddRows(-1)} className={"minus-btn"}
 											                size={20}/>
 										</div>
@@ -145,14 +157,17 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 									</div>
 								</div>
 								<div className={"room-grid-grow-div"}
-								     style={{width: (cellSize * _columns) + "px", height: (cellSize * _rows) + "px"}}/>
+								     style={{
+									     width: (cellSize * _hooverConfiguration.roomWidth) + "px",
+									     height: (cellSize * _hooverConfiguration.roomLength) + "px"
+								     }}/>
 							</div>
 						</Col>
 					</Row>
 				</Container>
 			</div>
 		)
-	}, [_rows, _columns]);
+	}, [props.render, _hooverConfiguration]);
 }
 
 export default RoomConfiguration;

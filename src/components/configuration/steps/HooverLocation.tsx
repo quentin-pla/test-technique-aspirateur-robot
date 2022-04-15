@@ -1,30 +1,29 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import "./RoomConfiguration.css";
-// import "./HooverLocation.css";
+import "./HooverLocation.css";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowLeft} from "react-bootstrap-icons";
+import {IHooverConfiguration} from "../Configuration";
 
+/**
+ * Hoover location configuration props
+ */
 interface IHooverLocationProps {
-	showNextStep: () => void,
-	showPreviousStep: () => void,
+	render: boolean,
+	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void,
+	showPreviousStep: (hooverConfiguration: IHooverConfiguration) => () => void,
+	hooverConfiguration: IHooverConfiguration
 }
 
 /**
- * Room configuration
+ * Hoover location configuration
  */
 const HooverLocation = (props: IHooverLocationProps) => {
-	const [_rows, _setRows] = useState<number>(2);
-	const [_columns, _setColumns] = useState<number>(3);
+	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
 
-	/**
-	 * Add a number of rows
-	 */
-	const addRow = (count: number) => () => _setRows(_prevRows => _prevRows + count);
-
-	/**
-	 * Add a number of columns
-	 */
-	const addColumn = (count: number) => () => _setColumns(_prevColumns => _prevColumns + count);
+	useEffect(() => {
+		_setHooverConfiguration({...props.hooverConfiguration});
+	}, [props.render])
 
 	/**
 	 * Get cell size
@@ -39,22 +38,23 @@ const HooverLocation = (props: IHooverLocationProps) => {
 	}
 
 	return useMemo(() => {
-		const cellSize = getCellSize(_rows, _columns);
+		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
 		return (
 			<div className={"fullscreen-window"}>
-				<Button className={"go-back-btn"} onClick={props.showPreviousStep}>
+				<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
 					<ArrowLeft size={30}/>
 				</Button>
 				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
 					<Row className={"d-flex align-items-center justify-content-center"}>
-						<Col className={"col-12 text-center mb-5"}>
+						<Col className={"col-12 text-center mb-4"}>
 							<h2>Place hoover in the room</h2>
+							<span>Click on a cell to place the hoover</span>
 						</Col>
-						<Col className={"col-12 room-grid"}>
+						<Col className={"col-12 room-grid location-grid"}>
 							<div className={"room-grid-delimiter"}>
-								{Array.from(Array(_rows).keys()).map(row => (
+								{Array.from(Array(_hooverConfiguration.roomLength).keys()).map(row => (
 									<div key={"row-" + row} className={"room-grid-row"}>
-										{Array.from(Array(_columns).keys()).map(column => (
+										{Array.from(Array(_hooverConfiguration.roomWidth).keys()).map(column => (
 											<div key={"column-" + column} className={"room-grid-cell"}
 											     style={{width: cellSize, height: cellSize}}>
 											</div>
@@ -67,7 +67,7 @@ const HooverLocation = (props: IHooverLocationProps) => {
 				</Container>
 			</div>
 		)
-	}, [_rows, _columns]);
+	}, [props.render, _hooverConfiguration]);
 }
 
 export default HooverLocation;
