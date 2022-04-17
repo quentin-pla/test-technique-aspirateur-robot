@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import {BrowserRouter, Route} from "react-router-dom";
 import ErrorBoundary from "./services/ErrorBoundary";
 import {Configuration} from "./components/configuration/Configuration";

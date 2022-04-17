@@ -1,23 +1,24 @@
 import React, {useEffect, useMemo, useState} from "react";
-import "./RoomConfiguration.css";
+import "./StepRoomSize.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {ArrowLeft, ArrowRight, DashCircleFill, PlusCircleFill} from "react-bootstrap-icons";
-import {IHooverConfiguration} from "../Configuration";
+import {ArrowLeft, ArrowRight, DashCircle, DashCircleFill, PlusCircle, PlusCircleFill} from "react-bootstrap-icons";
+import {ConfigurationStep, IHooverConfiguration} from "../Configuration";
+import {resetLongPressTimeout, startLongPressTimeout} from "../../../utils/utils";
 
 interface IRoomConfigurationProps {
+	step: ConfigurationStep,
 	render: boolean,
 	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void,
 	showPreviousStep: (hooverConfiguration: IHooverConfiguration) => () => void,
 	hooverConfiguration: IHooverConfiguration
 }
 
-let _longPressTimeout: NodeJS.Timeout | undefined = undefined;
-let _actionInterval: NodeJS.Timer | undefined = undefined;
-
 /**
  * Room configuration
  */
-const RoomConfiguration = (props: IRoomConfigurationProps) => {
+const StepRoomSize = (props: IRoomConfigurationProps) => {
+	const [_gridHeight] = useState<number>(400);
+	const [_gridWidth] = useState<number>(500);
 	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
 
 	/**
@@ -26,33 +27,6 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	useEffect(() => {
 		if (props.render) _setHooverConfiguration({...props.hooverConfiguration});
 	}, [props.render])
-
-	/**
-	 * Start long press timeout (for plus/minus buttons)
-	 * @param action action to execute in a loop
-	 */
-	const startLongPressTimeout = (action: () => void) => {
-		if (!!_longPressTimeout) clearTimeout(_longPressTimeout);
-		_longPressTimeout = setTimeout(() => {
-			if (!!_longPressTimeout) clearTimeout(_longPressTimeout);
-			_longPressTimeout = undefined;
-			_actionInterval = setInterval(action, 100);
-		}, 300)
-	}
-
-	/**
-	 * Reset timeout and interval
-	 */
-	const resetTimeoutAndInterval = () => {
-		if (!!_longPressTimeout) {
-			clearTimeout(_longPressTimeout);
-			_longPressTimeout = undefined;
-		}
-		if (!!_actionInterval) {
-			clearInterval(_actionInterval);
-			_actionInterval = undefined;
-		}
-	}
 
 	/**
 	 * Add rows to a value
@@ -110,15 +84,21 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	 * @param columns number of columns
 	 */
 	const getCellSize = (rows: number, columns: number): number => {
-		const height = (400 / rows);
-		const width = (500 / columns);
+		const height = _gridHeight / rows;
+		const width = _gridWidth / columns;
 		return width > height ? height : width;
 	}
 
 	return useMemo(() => {
+		const gridStyles = {
+			maxHeight: _gridHeight + "px",
+			minHeight: _gridHeight + "px",
+			maxWidth: _gridWidth + "px",
+			minWidth: _gridWidth + "px",
+		}
 		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
 		return (
-			<div className={"fullscreen-window"} onMouseUp={resetTimeoutAndInterval}>
+			<div id={props.step} className={"fullscreen-window"} onMouseUp={resetLongPressTimeout}>
 				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
 					<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
 						<ArrowLeft size={30}/>
@@ -129,8 +109,9 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 					<Row className={"d-flex align-items-center justify-content-center"}>
 						<Col className={"col-12 text-center mb-5"}>
 							<h2>Configure your room</h2>
+							<span>Long press <DashCircle size={15}/> or <PlusCircle size={15}/> to increase quickly room length and width</span>
 						</Col>
-						<Col className={"col-12 room-grid"}>
+						<Col className={"col-12 room-grid"} style={gridStyles}>
 							<div className={"room-grid-y-btn"}>
 								<Button className={"btn-grid-size"}>
 									<div className={"d-flex justify-content-center align-items-center gap-3"}>
@@ -173,4 +154,4 @@ const RoomConfiguration = (props: IRoomConfigurationProps) => {
 	}, [props.render, _hooverConfiguration]);
 }
 
-export default RoomConfiguration;
+export default StepRoomSize;

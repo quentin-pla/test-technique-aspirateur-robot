@@ -1,13 +1,14 @@
 import React, {useMemo} from "react";
-import "./StartConfiguration.css";
+import "./StepStart.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowRightCircleFill, PersonCircle} from "react-bootstrap-icons";
-import {IHooverConfiguration} from "../Configuration";
+import {ConfigurationStep, IHooverConfiguration} from "../Configuration";
 
 /**
  * Start configuration page props
  */
 interface IStartProps {
+	step: ConfigurationStep,
 	render: boolean,
 	hooverConfiguration: IHooverConfiguration,
 	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void
@@ -16,10 +17,10 @@ interface IStartProps {
 /**
  * Start configuration page
  */
-const StartConfiguration = (props: IStartProps) => {
+const StepStart = (props: IStartProps) => {
 	return useMemo(() => {
 		return (
-			<div className={"fullscreen-window"}>
+			<div id={props.step} className={"fullscreen-window"}>
 				<Container fluid className={"h-100"}>
 					<Row className={"h-100"}>
 						<Col className={"col-4 hoover-background"}>
@@ -62,4 +63,4 @@ const StartConfiguration = (props: IStartProps) => {
 	}, [props.render]);
 }
 
-export default StartConfiguration;
+export default StepStart;

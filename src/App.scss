@@ -1,0 +1,99 @@
+#root {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: 500;
+}
+
+h3 {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+h4 {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.text-brown {
+    color: #a59689 !important;
+}
+
+.btn-primary {
+    color: #a59689;
+    background-color: white;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+    border: 0;
+    border-radius: 100px;
+    padding: 10px 15px;
+    transition: all 0.3s;
+
+    &:hover, &:focus {
+        color: white;
+        background-color: #a59689;
+        border-radius: 100px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+    }
+
+    &:active, &:active:focus {
+        color: white;
+        background-color: #a59689;
+        border-radius: 100px;
+        transform: scale(0.95);
+        box-shadow: none;
+    }
+
+    &:focus:not(:active):not(:hover) {
+        color: #a59689;
+        background-color: white;
+    }
+
+    &.toggled {
+        color: white !important;
+        background-color: #a59689 !important;
+    }
+
+    &.disabled, &:disabled {
+        color: white !important;
+        background-color: rgba(0, 0, 0, 0.2) !important;
+    }
+}
+
+.fill-absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.no-select {
+    /* iOS Safari */
+    -webkit-touch-callout: none;
+    /* Safari */
+    -webkit-user-select: none;
+    /* Konqueror HTML */
+    -khtml-user-select: none;
+    /* Old versions of Firefox */
+    -moz-user-select: none;
+    /* Internet Explorer/Edge */
+    -ms-user-select: none;
+    /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+    user-select: none;
+}
+
+.no-transition {
+    transition: none !important;
+
+    * {
+        transition: none !important;
+    }
+}

@@ -16,19 +16,6 @@
     transition: all ease-out 0.6s;
 }
 
-.step-start {
-    transform: translate(0);
-}
-
-.step-grid-selection {
-    transform: translate(-50%);
-}
-
-.step-hoover-location {
-    transform: translate(-50%);
-}
-
-
 .go-back-btn {
     position: absolute;
     top: calc(50% - 30px);

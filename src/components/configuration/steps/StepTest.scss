@@ -1,0 +1,56 @@
+#step-test {
+    // Based on StepRoomSize rule
+    .room-grid {
+        .room-grid-delimiter {
+            background-color: white;
+            color: white;
+            outline: 3px solid #a59689;
+            overflow: hidden;
+        }
+
+        .room-grid-row {
+            .room-grid-cell {
+                border-left: 1px solid #a59689;
+                border-top: 1px solid #a59689;
+            }
+        }
+
+        .ihoover {
+            transition: all linear 1s;
+        }
+    }
+
+    .instructions-input {
+        display: flex;
+        align-items: center;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        height: 35px;
+        width: 300px;
+        padding: 5px 38px 5px 5px;
+        overflow-x: scroll;
+        color: rgba(0, 0, 0, 0.4);
+
+        .back {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 3px 10px 3px 3px;
+            color: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:active {
+                transform: scale(0.9);
+            }
+        }
+    }
+
+    .instruction-btn {
+        width: 35px;
+        height: 35px;
+        padding: 1px;
+        border-radius: 10px;
+    }
+}

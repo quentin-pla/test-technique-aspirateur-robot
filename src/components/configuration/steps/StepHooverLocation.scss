@@ -1,0 +1,79 @@
+.room-grid-row {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+
+    &:nth-child(1) {
+        margin-top: -1px;
+    }
+
+    .room-grid-cell {
+        position: relative;
+        height: 100%;
+
+        &:nth-child(1) {
+            margin-left: -1px;
+        }
+    }
+}
+
+.ihoover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: all 1s;
+    z-index: 999;
+
+    img {
+        -webkit-filter: drop-shadow(0 0 0.3rem rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 0 0.3rem rgba(0, 0, 0, 0.2));
+    }
+}
+
+#step-hoover-location {
+    // Based on StepRoomSize rule
+    .room-grid {
+        .room-grid-delimiter {
+            background-color: white;
+            color: white;
+            outline: 3px solid #a59689;
+            overflow: hidden;
+        }
+
+        .room-grid-row {
+            .room-grid-cell {
+                cursor: pointer;
+                border-left: 1px dashed #a59689;
+                border-top: 1px dashed #a59689;
+            }
+        }
+
+        .ihoover {
+            img {
+                cursor: alias;
+            }
+
+            .direction-arrow {
+                width: 35%;
+                height: 35%;
+                z-index: -1;
+                position: absolute;
+                top: calc(50% - 17.5%);
+                left: calc(50% - 17.5%);
+                color: gray;
+                transition: all 1s;
+                animation: arrowAnimation 0.8s infinite ease-in-out alternate;
+            }
+
+            @keyframes arrowAnimation {
+                100% {
+                    top: -30%;
+                }
+                0% {
+                    top: 0;
+                }
+            }
+        }
+    }
+}

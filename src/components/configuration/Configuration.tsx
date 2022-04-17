@@ -1,14 +1,28 @@
 import React, {useMemo, useState} from "react";
-import "./Configuration.css"
-import RoomConfiguration from "./steps/RoomConfiguration";
-import StartConfiguration from "./steps/StartConfiguration";
-import HooverLocation from "./steps/HooverLocation";
+import "./Configuration.scss"
+import StepRoomSize from "./steps/StepRoomSize";
+import StepStart from "./steps/StepStart";
+import StepHooverLocation from "./steps/StepHooverLocation";
+import StepTest from "./steps/StepTest";
 
 /**
  * Configuration steps
  */
 export enum ConfigurationStep {
-	Start = "step-start", RoomConfiguration = "step-grid-selection", HooverLocation = "step-hoover-location"
+	Start = "step-start",
+	RoomSize = "step-room-size",
+	HooverLocation = "step-hoover-location",
+	Test = "step-test"
+}
+
+/**
+ * Hoover orientation
+ */
+export enum HooverOrientation {
+	North = 0,
+	East = 90,
+	South = 180,
+	West = 270,
 }
 
 /**
@@ -19,21 +33,24 @@ export interface IHooverConfiguration {
 	roomWidth: number,
 	xLocation: number,
 	yLocation: number,
-	angle: number
+	orientation: HooverOrientation
 }
 
 /**
  * Steps order
  */
 const stepsOrder = [
-	ConfigurationStep.Start, ConfigurationStep.RoomConfiguration, ConfigurationStep.HooverLocation
+	ConfigurationStep.Start,
+	ConfigurationStep.RoomSize,
+	ConfigurationStep.HooverLocation,
+	ConfigurationStep.Test
 ]
 
 /**
  * Default configuration
  */
 const defaultConfiguration: IHooverConfiguration = {
-	roomLength: 5, roomWidth: 5, xLocation: 0, yLocation: 0, angle: 0
+	roomLength: 5, roomWidth: 5, xLocation: 0, yLocation: 0, orientation: 0
 }
 
 /**
@@ -66,20 +83,28 @@ export const Configuration = () => {
 		const childWidth = 100 / stepsOrder.length;
 		const transform = "translate(-" + (childWidth * _stepIndex) + "%)";
 		return (
-			<div className={"main-container"} style={{transform: transform, width: width}}>
-				<StartConfiguration
+			<div className={"main-container no-select"} style={{transform: transform, width: width}}>
+				<StepStart
+					step={ConfigurationStep.Start}
 					render={stepsOrder[_stepIndex] === ConfigurationStep.Start}
 					hooverConfiguration={_hooverConfiguration}
 					showNextStep={showNextStep}/>
-				<RoomConfiguration
-					render={stepsOrder[_stepIndex] === ConfigurationStep.RoomConfiguration}
+				<StepRoomSize
+					step={ConfigurationStep.RoomSize}
+					render={stepsOrder[_stepIndex] === ConfigurationStep.RoomSize}
 					hooverConfiguration={_hooverConfiguration}
 					showNextStep={showNextStep}
 					showPreviousStep={showPreviousStep}/>
-				<HooverLocation
+				<StepHooverLocation
+					step={ConfigurationStep.HooverLocation}
 					render={stepsOrder[_stepIndex] === ConfigurationStep.HooverLocation}
 					hooverConfiguration={_hooverConfiguration}
 					showNextStep={showNextStep}
+					showPreviousStep={showPreviousStep}/>
+				<StepTest
+					step={ConfigurationStep.Test}
+					render={stepsOrder[_stepIndex] === ConfigurationStep.Test}
+					hooverConfiguration={_hooverConfiguration}
 					showPreviousStep={showPreviousStep}/>
 			</div>
 		)
