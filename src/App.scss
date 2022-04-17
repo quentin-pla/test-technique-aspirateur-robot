@@ -63,7 +63,32 @@ h4 {
 
     &.disabled, &:disabled {
         color: white !important;
-        background-color: rgba(0, 0, 0, 0.2) !important;
+        background-color: rgba(0, 0, 0, 0.15) !important;
+        cursor: not-allowed !important;
+    }
+}
+
+.toast {
+    margin: 20px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    border: 0;
+    width: auto !important;
+    text-align: right;
+    transition: all 1s !important;
+
+    .toast-title {
+        font-weight: 500;
+        font-size: 16px;
+        color: #a59689;
+        margin-bottom: 5px !important;
+    }
+
+    .close {
+        margin-right: -7px;
+        margin-top: -7px;
+        color: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
     }
 }
 

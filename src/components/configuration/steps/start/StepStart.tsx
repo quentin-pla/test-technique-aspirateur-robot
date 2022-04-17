@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import "./StepStart.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowRightCircleFill, PersonCircle} from "react-bootstrap-icons";
-import {ConfigurationStep, IHooverConfiguration} from "../Configuration";
+import {ConfigurationStep, IHooverConfiguration} from "../../Configuration";
 
 /**
  * Start configuration page props

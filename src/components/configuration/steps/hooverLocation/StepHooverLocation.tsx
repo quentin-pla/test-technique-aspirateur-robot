@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import "./StepHooverLocation.scss";
 import {Button, Col, Container, Image, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, CaretUpFill} from "react-bootstrap-icons";
-import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../Configuration";
+import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../../Configuration";
 
 /**
  * Hoover location configuration props

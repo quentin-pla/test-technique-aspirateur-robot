@@ -1,9 +1,9 @@
 import React, {useMemo, useState} from "react";
 import "./Configuration.scss"
-import StepRoomSize from "./steps/StepRoomSize";
-import StepStart from "./steps/StepStart";
-import StepHooverLocation from "./steps/StepHooverLocation";
-import StepTest from "./steps/StepTest";
+import StepRoomSize from "./steps/roomSize/StepRoomSize";
+import StepStart from "./steps/start/StepStart";
+import StepHooverLocation from "./steps/hooverLocation/StepHooverLocation";
+import StepTest from "./steps/test/StepTest";
 
 /**
  * Configuration steps

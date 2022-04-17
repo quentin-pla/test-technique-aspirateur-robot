@@ -2,8 +2,8 @@ import React, {useEffect, useMemo, useState} from "react";
 import "./StepRoomSize.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, DashCircle, DashCircleFill, PlusCircle, PlusCircleFill} from "react-bootstrap-icons";
-import {ConfigurationStep, IHooverConfiguration} from "../Configuration";
-import {resetLongPressTimeout, startLongPressTimeout} from "../../../utils/utils";
+import {ConfigurationStep, IHooverConfiguration} from "../../Configuration";
+import {resetLongPressTimeout, startLongPressTimeout} from "../../../../utils/utils";
 
 interface IRoomConfigurationProps {
 	step: ConfigurationStep,

@@ -1,22 +1,15 @@
 import React, {CSSProperties, useEffect, useMemo, useState} from "react";
 import "./StepTest.scss";
-import {Button, Col, Container, Image, Row} from "react-bootstrap";
-import {
-	ArrowClockwise,
-	ArrowCounterclockwise,
-	ArrowLeft,
-	ArrowUp,
-	BackspaceFill,
-	PlayFill,
-	StopFill
-} from "react-bootstrap-icons";
-import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../Configuration";
-import {resetLongPressTimeout, startLongPressTimeout} from "../../../utils/utils";
+import {Button, Col, Container, Image, Row, Toast, ToastContainer} from "react-bootstrap";
+import {ArrowLeft, CheckCircleFill, X} from "react-bootstrap-icons";
+import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../../Configuration";
+import {startLongPressTimeout} from "../../../../utils/utils";
+import InstructionsForm from "./InstructionsForm";
 
 /**
  * Hoover instruction
  */
-enum HooverInstruction {
+export enum HooverInstruction {
 	GoFront, RotateLeft, RotateRight
 }
 
@@ -27,6 +20,15 @@ interface IAnimationConfiguration {
 	x: number,
 	y: number,
 	angle: number
+}
+
+/**
+ * Execution result
+ */
+interface IExecutionResult {
+	xLocation: number,
+	yLocation: number,
+	orientation: string
 }
 
 /**
@@ -51,8 +53,9 @@ const StepTest = (props: ITestConfigurationProps) => {
 	const [_cellSize, _setCellSize] = useState<number>(0);
 	const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
 	const [_instructions, _setInstructions] = useState<Array<HooverInstruction>>(new Array<HooverInstruction>());
-	const [_maxInstructions] = useState<number>(20);
 	const [_animationConfiguration, _setAnimationConfiguration] = useState<IAnimationConfiguration | null>(null);
+	const [_executionResult, _setExecutionResult] = useState<IExecutionResult | null>(null);
+	//TODO - show execution result pour avoir le fade effect on close
 
 	/**
 	 * On render
@@ -61,9 +64,9 @@ const StepTest = (props: ITestConfigurationProps) => {
 		if (!props.render) return;
 		_setAllowTransitions(false);
 		setTimeout(() => _setAllowTransitions(true), 300);
-		// Do not update grid if size is the same
-		if (props.hooverConfiguration.roomLength === _grid.length &&
-			props.hooverConfiguration.roomWidth === _grid[0].length) return;
+		const isSameGrid = props.hooverConfiguration.roomLength === _grid.length &&
+			props.hooverConfiguration.roomWidth === _grid[0].length;
+		if (isSameGrid) return;
 		const rows = Array.from(Array(props.hooverConfiguration.roomLength).keys());
 		const columns = Array.from(Array(props.hooverConfiguration.roomWidth).keys());
 		const grid = rows.map(row => columns.map(column => row + "," + column));
@@ -110,6 +113,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 */
 	const onExecuteInstructions = () => {
 		if (_instructions.length === 0) return;
+		_setAnimationConfiguration(null);
 		let instructionIndex = 0;
 		animateInstruction(_instructions[instructionIndex]);
 		++instructionIndex;
@@ -119,12 +123,24 @@ const StepTest = (props: ITestConfigurationProps) => {
 				++instructionIndex;
 			} else {
 				if (!!animationInterval) clearInterval(animationInterval);
+				setTimeout(() => _setAnimationConfiguration(prevConfig => {
+					if (!prevConfig) return null;
+					console.log(prevConfig)
+					const orientation = getOrientationFromAngle(prevConfig.angle);
+					const orientationLabel = HooverOrientation[orientation];
+					_setExecutionResult({
+						xLocation: prevConfig.x,
+						yLocation: prevConfig.y,
+						orientation: orientationLabel
+					});
+					return null;
+				}), 1000);
 			}
 		}, 1000);
 	}
 
 	/**
-	 * On stop instruction execution
+	 * On stop instructions execution
 	 */
 	const onStopInstructionsExecution = () => {
 		_setAnimationConfiguration(null);
@@ -210,6 +226,11 @@ const StepTest = (props: ITestConfigurationProps) => {
 	}
 
 	/**
+	 * On close execution result
+	 */
+	const onCloseExecutionResult = () => _setExecutionResult(null);
+
+	/**
 	 * Render grid
 	 */
 	const renderGrid = useMemo(() => {
@@ -225,78 +246,41 @@ const StepTest = (props: ITestConfigurationProps) => {
 	}, [_grid]);
 
 	/**
-	 * Render instruction
-	 * @param instruction hoover instruction
-	 * @param index instruction index
+	 * Render execution result
 	 */
-	const renderInstruction = (instruction: HooverInstruction, index: number) => {
-		switch (instruction) {
-			case HooverInstruction.GoFront:
-				return <ArrowUp key={"instruction-go-front-" + index}/>;
-			case HooverInstruction.RotateLeft:
-				return <ArrowCounterclockwise key={"instruction-rotate left-" + index}/>;
-			case HooverInstruction.RotateRight:
-				return <ArrowClockwise key={"instruction-rotate-right-" + index}/>;
-			default:
-				throw new Error("Instruction '" + instruction + "' does not exist");
-		}
-	}
-
-	/**
-	 * Render instructions
-	 */
-	const renderInstructions = useMemo(() => {
-		const areInstructionsButtonsDisabled = _instructions.length >= _maxInstructions;
+	const renderExecutionResult = useMemo(() => {
 		return (
-			<Row className={"d-flex flex-column mt-4 gap-3"}>
-				<Col className={"col-12"}
-				     onMouseUp={resetLongPressTimeout}>
-					<Row className={"d-flex align-items-center justify-content-center"}>
-						<Col className={"col-auto d-flex gap-2"}>
-							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={onAddInstruction(HooverInstruction.RotateLeft)}>
-								<ArrowCounterclockwise/>
-							</Button>
-							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={onAddInstruction(HooverInstruction.GoFront)}>
-								<ArrowUp/>
-							</Button>
-							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={onAddInstruction(HooverInstruction.RotateRight)}>
-								<ArrowClockwise/>
-							</Button>
-						</Col>
-						<Col className={"col-auto"}>
-							<div className={"instructions-input"}>
-								{_instructions.map((instruction, index) => renderInstruction(instruction, index))}
-								<div className={"back"} onMouseDown={onRemoveInstruction}><BackspaceFill/></div>
+			<ToastContainer position={"bottom-end"}>
+				<Toast show={!!_executionResult} onClose={onCloseExecutionResult} delay={10000} autohide>
+					<Toast.Body className={"d-flex flex-column"}>
+						<div className={"d-flex justify-content-between"}>
+							<span className={"toast-title"}>
+								Execution has ended <CheckCircleFill/>
+							</span>
+							<X className={"close"} size={25} onClick={onCloseExecutionResult}/>
+						</div>
+						{!!_executionResult ?
+							<div className={"d-flex gap-2"}>
+								<span>
+									Position (X,Y): <strong>{_executionResult.xLocation + 1},{_executionResult.yLocation + 1}</strong>
+								</span>
+								<span>
+									Orientation: <strong>{_executionResult.orientation}</strong>
+								</span>
 							</div>
-						</Col>
-						<Col className={"col-auto d-flex justify-content-center align-items-center"}>
-							{!_animationConfiguration ?
-								<Button className={"d-flex justify-content-center align-items-center gap-1"}
-								        onClick={onExecuteInstructions}>
-									Start <PlayFill size={20}/>
-								</Button>
-								:
-								<Button className={"d-flex justify-content-center align-items-center gap-1 toggled"}
-								        onClick={onStopInstructionsExecution}>
-									Stop <StopFill size={20}/>
-								</Button>
-							}
-						</Col>
-					</Row>
-				</Col>
-			</Row>
+							:
+							null
+						}
+					</Toast.Body>
+				</Toast>
+			</ToastContainer>
 		)
-	}, [_instructions, _animationConfiguration])
+	}, [_executionResult])
 
 	return useMemo(() => {
 		const gridStyles = {
-			maxHeight: _gridHeight + "px",
-			minHeight: _gridHeight + "px",
-			maxWidth: _gridWidth + "px",
-			minWidth: _gridWidth + "px",
+			maxHeight: _gridHeight + "px", minHeight: _gridHeight + "px",
+			maxWidth: _gridWidth + "px", minWidth: _gridWidth + "px",
 		}
 		return (
 			<div id={props.step} className={"fullscreen-window " + (_allowTransitions ? "" : "no-transition")}>
@@ -308,25 +292,29 @@ const StepTest = (props: ITestConfigurationProps) => {
 						<Col className={"col-12 text-center mb-4"}>
 							<h2>Test your configuration</h2>
 							<span>Select actions and click start to execute them</span>
-							{renderInstructions}
+							<InstructionsForm
+								instructions={_instructions}
+								isAnimationInProgress={!!_animationConfiguration}
+								onRemoveInstruction={onRemoveInstruction}
+								onAddInstruction={onAddInstruction}
+								onStopInstructionsExecution={onStopInstructionsExecution}
+								onExecuteInstructions={onExecuteInstructions}
+							/>
 						</Col>
 						<Col className={"col-12 room-grid"} style={gridStyles}>
 							<div className={"room-grid-delimiter"}>
 								{renderGrid}
 								<div className={"ihoover"} style={getHooverStyle()}>
-									<Image
-										width={_cellSize + "px"}
-										height={_cellSize + "px"}
-										src={"/ihoover.svg"}
-									/>
+									<Image width={_cellSize + "px"} height={_cellSize + "px"} src={"/ihoover.svg"}/>
 								</div>
 							</div>
 						</Col>
 					</Row>
 				</Container>
+				{renderExecutionResult}
 			</div>
 		)
-	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration]);
+	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _executionResult]);
 }
 
 export default StepTest;
