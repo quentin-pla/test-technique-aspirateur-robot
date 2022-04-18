@@ -1,26 +1,28 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo} from "react";
 import {HooverInstruction} from "./StepTest";
 import {Button, Col, Row} from "react-bootstrap";
 import {resetLongPressTimeout} from "../../../../utils/utils";
 import {ArrowClockwise, ArrowCounterclockwise, ArrowUp, BackspaceFill, PlayFill, StopFill} from "react-bootstrap-icons";
+import {IHooverConfiguration} from "../../Configuration";
 
 /**
  * Instructions form props
  */
 interface IInstructionsFormProps {
+	hooverConfiguration: IHooverConfiguration,
 	instructions: Array<HooverInstruction>,
 	isAnimationInProgress: boolean,
 	onAddInstruction: (instruction: HooverInstruction) => () => void,
 	onRemoveInstruction: () => void,
 	onExecuteInstructions: () => void,
 	onStopInstructionsExecution: () => void,
+	maxInstructions: number,
 }
 
 /**
  * Instructions form
  */
 const InstructionsForm = (props: IInstructionsFormProps) => {
-	const [_maxInstructions] = useState<number>(20);
 
 	/**
 	 * Render instruction
@@ -41,7 +43,7 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 	}
 
 	return useMemo(() => {
-		const areInstructionsButtonsDisabled = props.instructions.length >= _maxInstructions;
+		const areInstructionsButtonsDisabled = props.isAnimationInProgress || props.instructions.length >= props.maxInstructions;
 		return (
 			<Row className={"d-flex flex-column mt-4 gap-3"}>
 				<Col className={"col-12"}
@@ -65,7 +67,7 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 							<div className={"instructions-input"}>
 								{props.instructions.map((instruction, index) => renderInstruction(instruction, index))}
 								<div className={"back"} onMouseDown={props.onRemoveInstruction}>
-									<BackspaceFill/>
+									{!props.isAnimationInProgress ? <BackspaceFill/> : null}
 								</div>
 							</div>
 						</Col>
@@ -89,7 +91,7 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 				</Col>
 			</Row>
 		)
-	}, [props.instructions, props.isAnimationInProgress])
+	}, [props.hooverConfiguration, props.instructions, props.isAnimationInProgress])
 }
 
 export default InstructionsForm;

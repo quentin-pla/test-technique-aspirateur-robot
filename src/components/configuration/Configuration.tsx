@@ -4,6 +4,7 @@ import StepRoomSize from "./steps/roomSize/StepRoomSize";
 import StepStart from "./steps/start/StepStart";
 import StepHooverLocation from "./steps/hooverLocation/StepHooverLocation";
 import StepTest from "./steps/test/StepTest";
+import NavBar from "./NavBar";
 
 /**
  * Configuration steps
@@ -82,8 +83,10 @@ export const Configuration = () => {
 		const width = (stepsOrder.length * 100) + "%";
 		const childWidth = 100 / stepsOrder.length;
 		const transform = "translate(-" + (childWidth * _stepIndex) + "%)";
+		const navbarStyle = {width: childWidth + "%", transform: "translate(" + (100 * _stepIndex) + "%)"};
 		return (
 			<div className={"main-container no-select"} style={{transform: transform, width: width}}>
+				<NavBar step={stepsOrder[_stepIndex]} style={navbarStyle}/>
 				<StepStart
 					step={ConfigurationStep.Start}
 					render={stepsOrder[_stepIndex] === ConfigurationStep.Start}

@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import "./StepStart.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
-import {ArrowRightCircleFill, PersonCircle} from "react-bootstrap-icons";
+import {ArrowRightCircleFill} from "react-bootstrap-icons";
 import {ConfigurationStep, IHooverConfiguration} from "../../Configuration";
 
 /**
@@ -23,20 +23,8 @@ const StepStart = (props: IStartProps) => {
 			<div id={props.step} className={"fullscreen-window"}>
 				<Container fluid className={"h-100"}>
 					<Row className={"h-100"}>
-						<Col className={"col-4 hoover-background"}>
-							<Row>
-								<Col className={"col-12"}>
-									<span id={"logo"}>iHoover</span>
-								</Col>
-							</Row>
-						</Col>
-						<Col className={"col-8"}>
-							<Row>
-								<Col className={"col-12 d-flex px-3 py-3 justify-content-end align-items-center"}>
-									<h6 className={"me-2 mb-0"}>Martin</h6>
-									<PersonCircle size={25}/>
-								</Col>
-							</Row>
+						<Col className={"d-none d-md-flex col-4 hoover-background"}/>
+						<Col className={"col-12 col-md-8"}>
 							<Row className={"ms-5 d-flex h-100 align-items-center"}>
 								<Col className={"col-12"}>
 									<Col className={"col-12"}>

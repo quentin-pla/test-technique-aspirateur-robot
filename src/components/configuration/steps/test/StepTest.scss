@@ -25,10 +25,10 @@
         align-items: center;
         position: relative;
         background-color: rgba(0, 0, 0, 0.05);
-        border-radius: 10px;
+        border-radius: 100px;
         height: 35px;
         width: 300px;
-        padding: 5px 38px 5px 5px;
+        padding: 5px 38px 5px 10px;
         overflow-x: scroll;
         color: rgba(0, 0, 0, 0.4);
 
@@ -36,7 +36,7 @@
             position: absolute;
             top: 0;
             right: 0;
-            padding: 3px 10px 3px 3px;
+            padding: 3px 12px 3px 3px;
             color: rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: all 0.2s;
@@ -51,7 +51,7 @@
         width: 35px;
         height: 35px;
         padding: 1px;
-        border-radius: 10px;
+        border-radius: 100px;
     }
 
     .execution-btn {

@@ -1,7 +1,7 @@
 import React, {CSSProperties, useEffect, useMemo, useState} from "react";
 import "./StepTest.scss";
 import {Button, Col, Container, Image, Row, Toast, ToastContainer} from "react-bootstrap";
-import {ArrowLeft, CheckCircleFill, X} from "react-bootstrap-icons";
+import {ArrowLeft, X} from "react-bootstrap-icons";
 import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../../Configuration";
 import {startLongPressTimeout} from "../../../../utils/utils";
 import InstructionsForm from "./InstructionsForm";
@@ -53,9 +53,10 @@ const StepTest = (props: ITestConfigurationProps) => {
 	const [_cellSize, _setCellSize] = useState<number>(0);
 	const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
 	const [_instructions, _setInstructions] = useState<Array<HooverInstruction>>(new Array<HooverInstruction>());
+	const [_maxInstructions] = useState<number>(30);
 	const [_animationConfiguration, _setAnimationConfiguration] = useState<IAnimationConfiguration | null>(null);
 	const [_executionResult, _setExecutionResult] = useState<IExecutionResult | null>(null);
-	//TODO - show execution result pour avoir le fade effect on close
+	const [_showExecutionResult, _setShowExecutionResult] = useState<boolean>(false);
 
 	/**
 	 * On render
@@ -76,6 +77,13 @@ const StepTest = (props: ITestConfigurationProps) => {
 	}, [props.render])
 
 	/**
+	 * On execution result has changed
+	 */
+	useEffect(() => {
+		if (!!_executionResult) _setShowExecutionResult(true);
+	}, [_executionResult])
+
+	/**
 	 * Get cell size
 	 * @param rows number of rows
 	 * @param columns number of columns
@@ -90,7 +98,10 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 * On add instruction
 	 */
 	const onAddInstruction = (instruction: HooverInstruction) => () => {
-		const action = () => _setInstructions(prevInstructions => [...prevInstructions, instruction]);
+		const action = () => _setInstructions(prevInstructions => {
+			if (prevInstructions.length === _maxInstructions) return prevInstructions;
+			return [...prevInstructions, instruction];
+		});
 		startLongPressTimeout(action);
 		action();
 	}
@@ -100,8 +111,9 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 */
 	const onRemoveInstruction = () => {
 		const action = () => _setInstructions(prevInstructions => {
+			if (prevInstructions.length <= 0) return prevInstructions;
 			const instructions = [...prevInstructions];
-			if (instructions.length > 0) instructions.length -= 1;
+			instructions.length -= 1;
 			return instructions;
 		});
 		startLongPressTimeout(action, 50);
@@ -113,6 +125,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 */
 	const onExecuteInstructions = () => {
 		if (_instructions.length === 0) return;
+		_setShowExecutionResult(false);
 		_setAnimationConfiguration(null);
 		let instructionIndex = 0;
 		animateInstruction(_instructions[instructionIndex]);
@@ -125,7 +138,6 @@ const StepTest = (props: ITestConfigurationProps) => {
 				if (!!animationInterval) clearInterval(animationInterval);
 				setTimeout(() => _setAnimationConfiguration(prevConfig => {
 					if (!prevConfig) return null;
-					console.log(prevConfig)
 					const orientation = getOrientationFromAngle(prevConfig.angle);
 					const orientationLabel = HooverOrientation[orientation];
 					_setExecutionResult({
@@ -158,6 +170,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 				y: props.hooverConfiguration.yLocation,
 				angle: props.hooverConfiguration.orientation
 			}
+			console.log(animationConfiguration)
 			switch (instruction) {
 				case HooverInstruction.GoFront:
 					const orientation = getOrientationFromAngle(animationConfiguration.angle);
@@ -228,7 +241,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 	/**
 	 * On close execution result
 	 */
-	const onCloseExecutionResult = () => _setExecutionResult(null);
+	const onCloseExecutionResult = () => _setShowExecutionResult(false);
 
 	/**
 	 * Render grid
@@ -251,11 +264,11 @@ const StepTest = (props: ITestConfigurationProps) => {
 	const renderExecutionResult = useMemo(() => {
 		return (
 			<ToastContainer position={"bottom-end"}>
-				<Toast show={!!_executionResult} onClose={onCloseExecutionResult} delay={10000} autohide>
+				<Toast show={_showExecutionResult} onClose={onCloseExecutionResult} delay={10000} autohide>
 					<Toast.Body className={"d-flex flex-column"}>
 						<div className={"d-flex justify-content-between"}>
 							<span className={"toast-title"}>
-								Execution has ended <CheckCircleFill/>
+								Execution has ended
 							</span>
 							<X className={"close"} size={25} onClick={onCloseExecutionResult}/>
 						</div>
@@ -275,7 +288,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 				</Toast>
 			</ToastContainer>
 		)
-	}, [_executionResult])
+	}, [_showExecutionResult])
 
 	return useMemo(() => {
 		const gridStyles = {
@@ -293,12 +306,14 @@ const StepTest = (props: ITestConfigurationProps) => {
 							<h2>Test your configuration</h2>
 							<span>Select actions and click start to execute them</span>
 							<InstructionsForm
+								hooverConfiguration={props.hooverConfiguration}
 								instructions={_instructions}
 								isAnimationInProgress={!!_animationConfiguration}
 								onRemoveInstruction={onRemoveInstruction}
 								onAddInstruction={onAddInstruction}
 								onStopInstructionsExecution={onStopInstructionsExecution}
 								onExecuteInstructions={onExecuteInstructions}
+								maxInstructions={_maxInstructions}
 							/>
 						</Col>
 						<Col className={"col-12 room-grid"} style={gridStyles}>
@@ -314,7 +329,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 				{renderExecutionResult}
 			</div>
 		)
-	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _executionResult]);
+	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _showExecutionResult]);
 }
 
 export default StepTest;
