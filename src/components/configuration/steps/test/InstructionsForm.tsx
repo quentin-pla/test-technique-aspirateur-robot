@@ -23,7 +23,6 @@ interface IInstructionsFormProps {
  * Instructions form
  */
 const InstructionsForm = (props: IInstructionsFormProps) => {
-
 	/**
 	 * Render instruction
 	 * @param instruction hoover instruction
@@ -45,11 +44,11 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 	return useMemo(() => {
 		const areInstructionsButtonsDisabled = props.isAnimationInProgress || props.instructions.length >= props.maxInstructions;
 		return (
-			<Row className={"d-flex flex-column mt-4 gap-3"}>
+			<Row className={"d-flex flex-column mt-3"}>
 				<Col className={"col-12"}
 				     onMouseUp={resetLongPressTimeout}>
 					<Row className={"d-flex align-items-center justify-content-center"}>
-						<Col className={"col-auto d-flex gap-2"}>
+						<Col className={"col-auto d-flex gap-2 mb-3"}>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
 							        onMouseDown={props.onAddInstruction(HooverInstruction.RotateLeft)}>
 								<ArrowCounterclockwise/>
@@ -63,7 +62,7 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 								<ArrowClockwise/>
 							</Button>
 						</Col>
-						<Col className={"col-auto"}>
+						<Col className={"col-auto mb-3"}>
 							<div className={"instructions-input"}>
 								{props.instructions.map((instruction, index) => renderInstruction(instruction, index))}
 								<div className={"back"} onMouseDown={props.onRemoveInstruction}>
@@ -71,7 +70,7 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 								</div>
 							</div>
 						</Col>
-						<Col className={"col-auto d-flex justify-content-center align-items-center"}>
+						<Col className={"col-auto d-flex justify-content-center align-items-center mb-3"}>
 							{!props.isAnimationInProgress ?
 								<Button
 									className={"d-flex justify-content-center align-items-center gap-1 execution-btn "

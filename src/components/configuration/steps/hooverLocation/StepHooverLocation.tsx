@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import "./StepHooverLocation.scss";
 import {Button, Col, Container, Image, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, CaretUpFill} from "react-bootstrap-icons";
 import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../../Configuration";
 
 /**
- * Hoover location configuration props
+ * Hoover location step props
  */
 interface IStepHooverLocationProps {
 	step: ConfigurationStep,
@@ -16,19 +16,35 @@ interface IStepHooverLocationProps {
 }
 
 /**
- * Hoover location configuration
+ * Hoover location step
  */
 const StepHooverLocation = (props: IStepHooverLocationProps) => {
-	const [_gridHeight] = useState<number>(400);
-	const [_gridWidth] = useState<number>(500);
 	const [_grid, _setGrid] = useState<Array<Array<string>>>(new Array<Array<string>>())
 	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
 	const [_cellSize, _setCellSize] = useState<number>(0);
 	const [_hooverRotation, _setHooverRotation] = useState<number>(0);
 	const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
+	const gridRef = useRef<HTMLDivElement>(null);
 
 	/**
-	 * On render
+	 * Handle window resize
+	 */
+	useEffect(() => {
+		const handleResize = () => {
+			const cellSize = getCellSize(props.hooverConfiguration.roomLength, props.hooverConfiguration.roomWidth);
+			_setCellSize(cellSize);
+		}
+		if (props.render) {
+			window.addEventListener('resize', handleResize);
+			console.log("add")
+		} else {
+			window.removeEventListener('resize', handleResize);
+			console.log("remove")
+		}
+	}, [props.render])
+
+	/**
+	 * Handle render
 	 */
 	useEffect(() => {
 		if (!props.render) return;
@@ -43,7 +59,7 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 	}, [props.render])
 
 	/**
-	 * On hoover configuration change
+	 * Handle hoover configuration change
 	 */
 	useEffect(() => {
 		// Do not update grid if size is the same
@@ -63,15 +79,18 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 	 * @param columns number of columns
 	 */
 	const getCellSize = (rows: number, columns: number): number => {
-		const height = _gridHeight / rows;
-		const width = _gridWidth / columns;
-		return width > height ? height : width;
+		if (!gridRef.current) return 0;
+		const gridHeight = gridRef.current.offsetHeight - 50;
+		const gridWidth = gridRef.current.offsetWidth - 50;
+		const cellHeight = gridHeight / rows;
+		const cellWidth = gridWidth / columns;
+		return cellWidth > cellHeight ? cellHeight : cellWidth;
 	}
 
 	/**
-	 * On rotate hoover
+	 * Handle rotate hoover
 	 */
-	const onRotateHoover = () => {
+	const handleRotateHoover = () => {
 		_setHooverRotation(prevAngle => prevAngle + 90);
 		_setHooverConfiguration(prevConfig => {
 			let angle = prevConfig.orientation + 90;
@@ -98,9 +117,9 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 	}
 
 	/**
-	 * On select location
+	 * Handle select location
 	 */
-	const onSelectLocation = (location: string) => () => {
+	const handleSelectLocation = (location: string) => () => {
 		const [x, y] = location.split(",");
 		const xLocation = parseInt(x);
 		const yLocation = parseInt(y);
@@ -117,21 +136,25 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 			<div key={"row-" + rowIndex} className={"room-grid-row"}>
 				{row.map((column, columnIndex) => (
 					<div key={"column-" + columnIndex} className={"room-grid-cell"}
-					     onClick={onSelectLocation(row[columnIndex])}
+					     onClick={handleSelectLocation(row[columnIndex])}
 					     style={{width: _cellSize + "px", height: _cellSize + "px"}}>
 					</div>
 				))}
 			</div>
 		))
-	}, [_grid]);
+	}, [_grid, _cellSize]);
 
 	return useMemo(() => {
-		const gridStyles = {
-			maxHeight: _gridHeight + "px",
-			minHeight: _gridHeight + "px",
-			maxWidth: _gridWidth + "px",
-			minWidth: _gridWidth + "px",
-		}
+		const goBackButton = (
+			<Button className={"move-step-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
+				<ArrowLeft size={30}/>
+			</Button>
+		)
+		const goNextButton = (
+			<Button className={"move-step-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
+				<ArrowRight size={30}/>
+			</Button>
+		)
 		const hooverImageStyle = {
 			bottom: (_hooverConfiguration.yLocation * _cellSize) + "px",
 			left: (_hooverConfiguration.xLocation * _cellSize) + "px",
@@ -139,39 +162,45 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 		}
 		return (
 			<div id={props.step} className={"fullscreen-window " + (_allowTransitions ? "" : "no-transition")}>
-				<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
-					<ArrowLeft size={30}/>
-				</Button>
-				<Button className={"go-next-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
-					<ArrowRight size={30}/>
-				</Button>
-				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
-					<Row className={"d-flex align-items-center justify-content-center"}>
-						<Col className={"col-12 text-center mb-4"}>
-							<h2>Place hoover in the room</h2>
-							<span>Click on a cell to place the hoover</span>
-							<br/>
-							<span>Click on the hoover to rotate it</span>
+				<Container fluid className={"h-100 pb-md-5"}>
+					<Row className={"h-100"}>
+						<Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
+							{goBackButton}
 						</Col>
-						<Col className={"col-12 room-grid"} style={gridStyles}>
-							<div className={"room-grid-delimiter"}>
-								{renderGrid}
-								<div className={"ihoover"} style={hooverImageStyle}>
-									<Image
-										onClick={onRotateHoover}
-										width={_cellSize + "px"}
-										height={_cellSize + "px"}
-										src={"/ihoover.svg"}
-									/>
-									<CaretUpFill className={"direction-arrow"}/>
+						<Col className={"col-12 col-md-10 d-flex flex-column"}>
+							<div
+								className={"d-flex flex-column justify-content-center align-items-center mb-2 text-center "}>
+								<h2>Place hoover in the room</h2>
+								<p>To place the hoover, click on a cell</p>
+								<p>Select the orientation by clicking on the hoover</p>
+							</div>
+							<div ref={gridRef} className={"room-grid"}>
+								<div className={"room-grid-delimiter"}>
+									{renderGrid}
+									<div className={"ihoover"} style={hooverImageStyle}>
+										<Image
+											onClick={handleRotateHoover}
+											width={_cellSize + "px"}
+											height={_cellSize + "px"}
+											src={"/ihoover.svg"}
+										/>
+										<CaretUpFill className={"direction-arrow"}/>
+									</div>
 								</div>
 							</div>
+							<div className={"move-step-container"}>
+								{goBackButton}
+								{goNextButton}
+							</div>
+						</Col>
+						<Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
+							{goNextButton}
 						</Col>
 					</Row>
 				</Container>
 			</div>
 		)
-	}, [props.render, _hooverConfiguration, _grid, _allowTransitions]);
+	}, [props.render, _hooverConfiguration, _grid, _allowTransitions, _cellSize]);
 }
 
 export default StepHooverLocation;

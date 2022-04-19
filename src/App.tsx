@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.scss';
 import {BrowserRouter, Route} from "react-router-dom";
-import ErrorBoundary from "./services/ErrorBoundary";
 import {Configuration} from "./components/configuration/Configuration";
 
 /**
@@ -9,13 +8,11 @@ import {Configuration} from "./components/configuration/Configuration";
  */
 export const App = () => {
 	return (
-		<ErrorBoundary>
-			<BrowserRouter>
-				<Route exact path={"/"}>
-					<Configuration/>
-				</Route>
-			</BrowserRouter>
-		</ErrorBoundary>
+		<BrowserRouter>
+			<Route exact path={"/"}>
+				<Configuration/>
+			</Route>
+		</BrowserRouter>
 	);
 }
 

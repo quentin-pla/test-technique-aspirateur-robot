@@ -8,10 +8,9 @@
 
 .fullscreen-window {
     position: relative;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
-    padding-top: 100px;
 }
 
 .main-container {
@@ -21,12 +20,7 @@
     transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 }
 
-.go-back-btn {
-    width: 60px;
-    height: 60px;
-}
-
-.go-next-btn {
+.move-step-btn {
     width: 60px;
     height: 60px;
 }
@@ -47,7 +41,17 @@
     }
 }
 
-@media screen and (max-width: 700px) {
+.move-step-container {
+    display: none;
+    padding: 20px 20px 35px 20px;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 767px) {
+    #logo {
+        color: black;
+    }
+
     .go-back-btn {
         top: calc(100% - 90px);
         left: 50px;
@@ -60,5 +64,10 @@
         right: 50px;
         width: 60px;
         height: 60px;
+    }
+
+    .move-step-container {
+        display: flex;
+
     }
 }

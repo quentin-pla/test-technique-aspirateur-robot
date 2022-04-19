@@ -5,7 +5,10 @@ import {ArrowLeft, ArrowRight, DashCircle, DashCircleFill, PlusCircle, PlusCircl
 import {ConfigurationStep, IHooverConfiguration} from "../../Configuration";
 import {resetLongPressTimeout, startLongPressTimeout} from "../../../../utils/utils";
 
-interface IRoomConfigurationProps {
+/**
+ * Room size step props
+ */
+interface IStepRoomSizeProps {
 	step: ConfigurationStep,
 	render: boolean,
 	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void,
@@ -14,14 +17,35 @@ interface IRoomConfigurationProps {
 }
 
 /**
- * Room configuration
+ * Room size step
  */
-const StepRoomSize = (props: IRoomConfigurationProps) => {
+const StepRoomSize = (props: IStepRoomSizeProps) => {
+	const [_cellSize, _setCellSize] = useState<number>(0);
 	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
 	const gridRef = useRef<HTMLDivElement>(null);
 
 	/**
-	 * On render
+	 * Handle window resize
+	 */
+	useEffect(() => {
+		const handleResize = () => {
+			const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
+			_setCellSize(cellSize);
+		}
+		if (props.render) window.addEventListener('resize', handleResize);
+		else window.removeEventListener('resize', handleResize);
+	}, [props.render])
+
+	/**
+	 * Handle hoover configuration change
+	 */
+	useEffect(() => {
+		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
+		_setCellSize(cellSize);
+	}, [_hooverConfiguration])
+
+	/**
+	 * Handle render
 	 */
 	useEffect(() => {
 		if (props.render) _setHooverConfiguration({...props.hooverConfiguration});
@@ -55,7 +79,7 @@ const StepRoomSize = (props: IRoomConfigurationProps) => {
 	 * On press button to add rows
 	 * @param rowsToAdd number of rows to add
 	 */
-	const onAddRows = (rowsToAdd: number) => () => {
+	const handleAddRows = (rowsToAdd: number) => () => {
 		const action = () => _setHooverConfiguration(prevConfiguration => ({
 			...prevConfiguration,
 			roomLength: addRows(prevConfiguration.roomLength, rowsToAdd)
@@ -68,7 +92,7 @@ const StepRoomSize = (props: IRoomConfigurationProps) => {
 	 * On press button to add columns
 	 * @param columnsToAdd number of columns to add
 	 */
-	const onAddColumns = (columnsToAdd: number) => () => {
+	const handleAddColumns = (columnsToAdd: number) => () => {
 		const action = () => _setHooverConfiguration(prevConfiguration => ({
 			...prevConfiguration,
 			roomWidth: addColumns(prevConfiguration.roomWidth, columnsToAdd)
@@ -92,30 +116,51 @@ const StepRoomSize = (props: IRoomConfigurationProps) => {
 	}
 
 	return useMemo(() => {
-		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
+		const isOnMobile = document.body.offsetWidth < 768;
+		const goBackButton = (
+			<Button className={"move-step-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
+				<ArrowLeft size={30}/>
+			</Button>
+		)
+		const goNextButton = (
+			<Button className={"move-step-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
+				<ArrowRight size={30}/>
+			</Button>
+		)
 		return (
 			<div id={props.step} className={"fullscreen-window"} onMouseUp={resetLongPressTimeout}>
-				<Container fluid className={"h-100 pb-5"}>
+				<Container fluid className={"h-100 pb-md-5"}>
 					<Row className={"h-100"}>
-						<Col className={"col-1 d-flex align-items-center justify-content-center"}>
-							<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
-								<ArrowLeft size={30}/>
-							</Button>
+						<Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
+							{goBackButton}
 						</Col>
-						<Col className={"col-10 d-flex flex-column"}>
-							<div className={"d-flex flex-column text-center mb-4"}>
+						<Col className={"col-12 col-md-10 d-flex flex-column"}>
+							<div className={"d-flex flex-column text-center mb-2 text-center"}>
 								<h2>Configure your room</h2>
-								<span>Long press <DashCircle size={15}/> or <PlusCircle size={15}/> to increase quickly room length and width</span>
+								{
+									isOnMobile ?
+										<p>Press <DashCircle size={15}/> or <PlusCircle size={15}/> to increase room
+											length and width</p>
+										:
+										<p>Long press <DashCircle size={15}/> or <PlusCircle size={15}/> to increase
+											quickly room length and width</p>
+								}
 							</div>
 							<div ref={gridRef} className={"room-grid"}>
 								<div className={"room-grid-y-btn"}>
 									<Button className={"btn-grid-size"}>
 										<div className={"d-flex justify-content-center align-items-center gap-3"}>
-											<DashCircleFill onMouseDown={onAddColumns(-1)} className={"minus-btn"}
-											                size={20}/>
+											<DashCircleFill
+												size={20}
+												className={"minus-btn"}
+												onMouseDown={handleAddColumns(-1)}
+											/>
 											{_hooverConfiguration.roomWidth}m
-											<PlusCircleFill onMouseDown={onAddColumns(1)} className={"plus-btn"}
-											                size={20}/>
+											<PlusCircleFill
+												size={20}
+												className={"plus-btn"}
+												onMouseDown={handleAddColumns(1)}
+											/>
 										</div>
 									</Button>
 								</div>
@@ -124,11 +169,17 @@ const StepRoomSize = (props: IRoomConfigurationProps) => {
 										<Button className={"btn-grid-size row-btn"}>
 											<div
 												className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
-												<PlusCircleFill onMouseDown={onAddRows(1)} className={"plus-btn"}
-												                size={20}/>
+												<PlusCircleFill
+													size={20}
+													className={"plus-btn"}
+													onMouseDown={handleAddRows(1)}
+												/>
 												{_hooverConfiguration.roomLength}m
-												<DashCircleFill onMouseDown={onAddRows(-1)} className={"minus-btn"}
-												                size={20}/>
+												<DashCircleFill
+													size={20}
+													className={"minus-btn"}
+													onMouseDown={handleAddRows(-1)}
+												/>
 											</div>
 										</Button>
 									</div>
@@ -139,22 +190,24 @@ const StepRoomSize = (props: IRoomConfigurationProps) => {
 									</div>
 									<div className={"room-grid-grow-div"}
 									     style={{
-										     width: (cellSize * _hooverConfiguration.roomWidth) + "px",
-										     height: (cellSize * _hooverConfiguration.roomLength) + "px"
+										     width: (_cellSize * _hooverConfiguration.roomWidth) + "px",
+										     height: (_cellSize * _hooverConfiguration.roomLength) + "px"
 									     }}/>
 								</div>
 							</div>
+							<div className={"move-step-container"}>
+								{goBackButton}
+								{goNextButton}
+							</div>
 						</Col>
-						<Col className={"col-1 d-flex align-items-center justify-content-center"}>
-							<Button className={"go-next-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
-								<ArrowRight size={30}/>
-							</Button>
+						<Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
+							{goNextButton}
 						</Col>
 					</Row>
 				</Container>
 			</div>
 		)
-	}, [props.render, _hooverConfiguration]);
+	}, [props.render, _hooverConfiguration, _cellSize]);
 }
 
 export default StepRoomSize;

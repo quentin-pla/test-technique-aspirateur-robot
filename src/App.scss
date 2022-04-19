@@ -18,8 +18,8 @@ h3 {
     font-weight: 400;
 }
 
-.text-brown {
-    color: #a59689 !important;
+p {
+    margin-bottom: 0;
 }
 
 .btn-primary {
@@ -30,6 +30,7 @@ h3 {
     border-radius: 100px;
     padding: 10px 15px;
     transition: all 0.3s;
+    font-size: 16px;
 
     &:hover, &:focus {
         color: white;
@@ -118,9 +119,9 @@ h3 {
     }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 767px) {
     h1 {
-        font-size: 40px;
+        font-size: 35px;
     }
 
     h2 {
@@ -129,5 +130,9 @@ h3 {
 
     h3 {
         font-size: 20px;
+    }
+
+    p {
+        font-size: 15px;
     }
 }

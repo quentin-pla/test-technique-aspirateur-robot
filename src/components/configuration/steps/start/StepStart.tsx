@@ -5,7 +5,7 @@ import {ArrowRightCircleFill} from "react-bootstrap-icons";
 import {ConfigurationStep, IHooverConfiguration} from "../../Configuration";
 
 /**
- * Start configuration page props
+ * Start step props
  */
 interface IStartProps {
 	step: ConfigurationStep,
@@ -15,7 +15,7 @@ interface IStartProps {
 }
 
 /**
- * Start configuration page
+ * Start step
  */
 const StepStart = (props: IStartProps) => {
 	return useMemo(() => {
@@ -23,24 +23,26 @@ const StepStart = (props: IStartProps) => {
 			<div id={props.step} className={"fullscreen-window"}>
 				<Container fluid className={"h-100"}>
 					<Row className={"h-100"}>
-						<Col className={"d-none d-md-flex col-4 hoover-background"}/>
-						<Col className={"col-12 col-md-8"}>
-							<Row className={"ms-5 d-flex h-100 align-items-center"}>
+						<Col className={"col-12 col-md-4 order-2 order-md-1 hoover-background"}/>
+						<Col className={"col-12 col-md-8 order-1 order-md-2"}>
+							<Row className={"me-3 ms-3 ms-md-5 d-flex h-100 align-items-center"}>
 								<Col className={"col-12"}>
-									<Col className={"col-12"}>
-										<h1 className={"mb-4"}>Welcome <span className={"text-brown"}>Martin</span></h1>
-									</Col>
-									<Col className={"col-12"}>
-										<h3 className={"mb-5"}>Thanks for purchasing our <strong>iHoover v4</strong>
+									<Row>
+										<h1 className={"mb-3 mb-md-3"}>Welcome <span
+											className={"username"}>Martin</span></h1>
+									</Row>
+									<Row>
+										<h3 className={"mb-4 mb-md-5"}>Thanks for purchasing our <strong>iHoover
+											v4</strong>
 										</h3>
-									</Col>
-									<Col className={"col-12"}>
-										<Button onClick={props.showNextStep(props.hooverConfiguration)}>
-											<div className={"d-flex justify-content-center align-items-center"}>
+									</Row>
+									<Row>
+										<Col>
+											<Button onClick={props.showNextStep(props.hooverConfiguration)}>
 												Start configuration <ArrowRightCircleFill className={"ms-2"} size={18}/>
-											</div>
-										</Button>
-									</Col>
+											</Button>
+										</Col>
+									</Row>
 								</Col>
 							</Row>
 						</Col>

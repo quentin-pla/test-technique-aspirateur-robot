@@ -1,6 +1,6 @@
 import {Col, Container, Row} from "react-bootstrap";
 import {PersonCircle} from "react-bootstrap-icons";
-import React, {CSSProperties} from "react";
+import React, {CSSProperties, useEffect, useMemo, useState} from "react";
 import {ConfigurationStep} from "./Configuration";
 
 /**
@@ -15,14 +15,46 @@ interface INavBarProps {
  * NavBar
  */
 const NavBar = (props: INavBarProps) => {
-	const logoColor = props.step === ConfigurationStep.Start ? "white" : "black";
-	return (
+	const [_logoColor, _setLogoColor] = useState<string>("white");
+
+	/**
+	 * Handle window resize
+	 */
+	useEffect(() => {
+		const handleResize = () => {
+			let logoColor = getLogoColor();
+			_setLogoColor(logoColor);
+		}
+		window.addEventListener('resize', handleResize);
+	}, [])
+
+	/**
+	 * Handle step change
+	 */
+	useEffect(() => {
+		let logoColor = getLogoColor();
+		if (logoColor === _logoColor) return;
+		_setLogoColor(logoColor);
+	}, [props.step]);
+
+	/**
+	 * Get logo color
+	 */
+	const getLogoColor = () => {
+		let logoColor: string;
+		const isOnMobile = document.body.offsetWidth < 768;
+		if (isOnMobile) logoColor = "black";
+		else logoColor = props.step === ConfigurationStep.Start ? "white" : "black";
+		return logoColor;
+	}
+
+	return useMemo(() => (
 		<Container fluid className={"navbar"} style={props.style}>
 			<Row className={"w-100"}>
 				<Col className={"col-4 hoover-background"}>
 					<Row>
 						<Col className={"col-12"}>
-							<span id={"logo"} style={{color: logoColor}}>iHoover</span>
+							<span id={"logo"} style={{color: _logoColor}}>iHoover</span>
 						</Col>
 					</Row>
 				</Col>
@@ -36,7 +68,7 @@ const NavBar = (props: INavBarProps) => {
 				</Col>
 			</Row>
 		</Container>
-	)
+	), [_logoColor, props.style]);
 }
 
 export default NavBar;

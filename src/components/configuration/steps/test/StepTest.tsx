@@ -1,4 +1,4 @@
-import React, {CSSProperties, useEffect, useMemo, useState} from "react";
+import React, {CSSProperties, useEffect, useMemo, useRef, useState} from "react";
 import "./StepTest.scss";
 import {Button, Col, Container, Image, Row, Toast, ToastContainer} from "react-bootstrap";
 import {ArrowLeft, X} from "react-bootstrap-icons";
@@ -41,14 +41,13 @@ interface ITestConfigurationProps {
 	hooverConfiguration: IHooverConfiguration
 }
 
+// Animation interval
 let animationInterval: NodeJS.Timer | null = null;
 
 /**
  * Test configuration step
  */
 const StepTest = (props: ITestConfigurationProps) => {
-	const [_gridHeight] = useState<number>(300);
-	const [_gridWidth] = useState<number>(400);
 	const [_grid, _setGrid] = useState<Array<Array<string>>>(new Array<Array<string>>())
 	const [_cellSize, _setCellSize] = useState<number>(0);
 	const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
@@ -57,6 +56,19 @@ const StepTest = (props: ITestConfigurationProps) => {
 	const [_animationConfiguration, _setAnimationConfiguration] = useState<IAnimationConfiguration | null>(null);
 	const [_executionResult, _setExecutionResult] = useState<IExecutionResult | null>(null);
 	const [_showExecutionResult, _setShowExecutionResult] = useState<boolean>(false);
+	const gridRef = useRef<HTMLDivElement>(null);
+
+	/**
+	 * On window resize
+	 */
+	useEffect(() => {
+		const handleResize = () => {
+			const cellSize = getCellSize(props.hooverConfiguration.roomLength, props.hooverConfiguration.roomWidth);
+			_setCellSize(cellSize);
+		}
+		if (props.render) window.addEventListener('resize', handleResize);
+		else window.removeEventListener('resize', handleResize);
+	}, [props.render])
 
 	/**
 	 * On render
@@ -89,9 +101,12 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 * @param columns number of columns
 	 */
 	const getCellSize = (rows: number, columns: number): number => {
-		const height = _gridHeight / rows;
-		const width = _gridWidth / columns;
-		return width > height ? height : width;
+		if (!gridRef.current) return 0;
+		const gridHeight = gridRef.current.offsetHeight - 20;
+		const gridWidth = gridRef.current.offsetWidth - 20;
+		const cellHeight = gridHeight / rows;
+		const cellWidth = gridWidth / columns;
+		return cellWidth > cellHeight ? cellHeight : cellWidth;
 	}
 
 	/**
@@ -170,7 +185,6 @@ const StepTest = (props: ITestConfigurationProps) => {
 				y: props.hooverConfiguration.yLocation,
 				angle: props.hooverConfiguration.orientation
 			}
-			console.log(animationConfiguration)
 			switch (instruction) {
 				case HooverInstruction.GoFront:
 					const orientation = getOrientationFromAngle(animationConfiguration.angle);
@@ -256,7 +270,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 				))}
 			</div>
 		))
-	}, [_grid]);
+	}, [_grid, _cellSize]);
 
 	/**
 	 * Render execution result
@@ -291,45 +305,52 @@ const StepTest = (props: ITestConfigurationProps) => {
 	}, [_showExecutionResult])
 
 	return useMemo(() => {
-		const gridStyles = {
-			maxHeight: _gridHeight + "px", minHeight: _gridHeight + "px",
-			maxWidth: _gridWidth + "px", minWidth: _gridWidth + "px",
-		}
+		const goBackButton = (
+			<Button className={"move-step-btn"} onClick={props.showPreviousStep(props.hooverConfiguration)}>
+				<ArrowLeft size={30}/>
+			</Button>
+		)
 		return (
 			<div id={props.step} className={"fullscreen-window " + (_allowTransitions ? "" : "no-transition")}>
-				<Button className={"go-back-btn"} onClick={props.showPreviousStep(props.hooverConfiguration)}>
-					<ArrowLeft size={30}/>
-				</Button>
-				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
-					<Row className={"d-flex align-items-center justify-content-center"}>
-						<Col className={"col-12 text-center mb-4"}>
-							<h2>Test your configuration</h2>
-							<span>Select actions and click start to execute them</span>
-							<InstructionsForm
-								hooverConfiguration={props.hooverConfiguration}
-								instructions={_instructions}
-								isAnimationInProgress={!!_animationConfiguration}
-								onRemoveInstruction={onRemoveInstruction}
-								onAddInstruction={onAddInstruction}
-								onStopInstructionsExecution={onStopInstructionsExecution}
-								onExecuteInstructions={onExecuteInstructions}
-								maxInstructions={_maxInstructions}
-							/>
+				<Container fluid className={"h-100 pb-md-5"}>
+					<Row className={"h-100"}>
+						<Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
+							{goBackButton}
 						</Col>
-						<Col className={"col-12 room-grid"} style={gridStyles}>
-							<div className={"room-grid-delimiter"}>
-								{renderGrid}
-								<div className={"ihoover"} style={getHooverStyle()}>
-									<Image width={_cellSize + "px"} height={_cellSize + "px"} src={"/ihoover.svg"}/>
+						<Col className={"col-12 col-md-10 d-flex flex-column"}>
+							<div className={"d-flex flex-column justify-content-center align-items-center text-center"}>
+								<h2>Test your configuration</h2>
+								<p>Select actions and click start to execute them</p>
+								<InstructionsForm
+									hooverConfiguration={props.hooverConfiguration}
+									instructions={_instructions}
+									isAnimationInProgress={!!_animationConfiguration}
+									onRemoveInstruction={onRemoveInstruction}
+									onAddInstruction={onAddInstruction}
+									onStopInstructionsExecution={onStopInstructionsExecution}
+									onExecuteInstructions={onExecuteInstructions}
+									maxInstructions={_maxInstructions}
+								/>
+							</div>
+							<div ref={gridRef} className={"room-grid"}>
+								<div className={"room-grid-delimiter"}>
+									{renderGrid}
+									<div className={"ihoover"} style={getHooverStyle()}>
+										<Image width={_cellSize + "px"} height={_cellSize + "px"} src={"/ihoover.svg"}/>
+									</div>
 								</div>
 							</div>
+							<div className={"move-step-container"}>
+								{goBackButton}
+							</div>
 						</Col>
+						<Col className={"col-1 d-none d-md-flex"}/>
 					</Row>
 				</Container>
 				{renderExecutionResult}
 			</div>
 		)
-	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _showExecutionResult]);
+	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _showExecutionResult, _cellSize]);
 }
 
 export default StepTest;

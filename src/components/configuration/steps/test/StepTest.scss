@@ -1,5 +1,6 @@
 #step-test {
-    // Based on StepRoomSize rule
+    padding-top: 100px;
+
     .room-grid {
         .room-grid-delimiter {
             background-color: white;
@@ -56,5 +57,13 @@
 
     .execution-btn {
         width: 95px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #step-test {
+        .instructions-input {
+            width: 50vw;
+        }
     }
 }
