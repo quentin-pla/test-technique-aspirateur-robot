@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import "./StepRoomSize.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, DashCircle, DashCircleFill, PlusCircle, PlusCircleFill} from "react-bootstrap-icons";
@@ -17,9 +17,8 @@ interface IRoomConfigurationProps {
  * Room configuration
  */
 const StepRoomSize = (props: IRoomConfigurationProps) => {
-	const [_gridHeight] = useState<number>(400);
-	const [_gridWidth] = useState<number>(500);
 	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
+	const gridRef = useRef<HTMLDivElement>(null);
 
 	/**
 	 * On render
@@ -84,68 +83,72 @@ const StepRoomSize = (props: IRoomConfigurationProps) => {
 	 * @param columns number of columns
 	 */
 	const getCellSize = (rows: number, columns: number): number => {
-		const height = _gridHeight / rows;
-		const width = _gridWidth / columns;
-		return width > height ? height : width;
+		if (!gridRef.current) return 0;
+		const gridHeight = gridRef.current.offsetHeight - 100;
+		const gridWidth = gridRef.current.offsetWidth - 150;
+		const cellHeight = gridHeight / rows;
+		const cellWidth = gridWidth / columns;
+		return cellWidth > cellHeight ? cellHeight : cellWidth;
 	}
 
 	return useMemo(() => {
-		const gridStyles = {
-			maxHeight: _gridHeight + "px",
-			minHeight: _gridHeight + "px",
-			maxWidth: _gridWidth + "px",
-			minWidth: _gridWidth + "px",
-		}
 		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
 		return (
 			<div id={props.step} className={"fullscreen-window"} onMouseUp={resetLongPressTimeout}>
-				<Container fluid className={"h-100 d-flex align-items-center justify-content-center"}>
-					<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
-						<ArrowLeft size={30}/>
-					</Button>
-					<Button className={"go-next-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
-						<ArrowRight size={30}/>
-					</Button>
-					<Row className={"d-flex align-items-center justify-content-center"}>
-						<Col className={"col-12 text-center mb-5"}>
-							<h2>Configure your room</h2>
-							<span>Long press <DashCircle size={15}/> or <PlusCircle size={15}/> to increase quickly room length and width</span>
+				<Container fluid className={"h-100 pb-5"}>
+					<Row className={"h-100"}>
+						<Col className={"col-1 d-flex align-items-center justify-content-center"}>
+							<Button className={"go-back-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
+								<ArrowLeft size={30}/>
+							</Button>
 						</Col>
-						<Col className={"col-12 room-grid"} style={gridStyles}>
-							<div className={"room-grid-y-btn"}>
-								<Button className={"btn-grid-size"}>
-									<div className={"d-flex justify-content-center align-items-center gap-3"}>
-										<DashCircleFill onMouseDown={onAddColumns(-1)} className={"minus-btn"}
-										                size={20}/>
-										{_hooverConfiguration.roomWidth}m
-										<PlusCircleFill onMouseDown={onAddColumns(1)} className={"plus-btn"} size={20}/>
-									</div>
-								</Button>
+						<Col className={"col-10 d-flex flex-column"}>
+							<div className={"d-flex flex-column text-center mb-4"}>
+								<h2>Configure your room</h2>
+								<span>Long press <DashCircle size={15}/> or <PlusCircle size={15}/> to increase quickly room length and width</span>
 							</div>
-							<div className={"room-grid-delimiter"}>
-								<div className={"room-grid-x-btn"}>
-									<Button className={"btn-grid-size row-btn"}>
-										<div
-											className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
-											<PlusCircleFill onMouseDown={onAddRows(1)} className={"plus-btn"}
+							<div ref={gridRef} className={"room-grid"}>
+								<div className={"room-grid-y-btn"}>
+									<Button className={"btn-grid-size"}>
+										<div className={"d-flex justify-content-center align-items-center gap-3"}>
+											<DashCircleFill onMouseDown={onAddColumns(-1)} className={"minus-btn"}
 											                size={20}/>
-											{_hooverConfiguration.roomLength}m
-											<DashCircleFill onMouseDown={onAddRows(-1)} className={"minus-btn"}
+											{_hooverConfiguration.roomWidth}m
+											<PlusCircleFill onMouseDown={onAddColumns(1)} className={"plus-btn"}
 											                size={20}/>
 										</div>
 									</Button>
 								</div>
-								<div className={"fill-absolute overflow-hidden"}>
-									<div className={"room-grid-center-label"}>
-										My room
+								<div className={"room-grid-delimiter"}>
+									<div className={"room-grid-x-btn"}>
+										<Button className={"btn-grid-size row-btn"}>
+											<div
+												className={"d-flex flex-column justify-content-center align-items-center gap-3"}>
+												<PlusCircleFill onMouseDown={onAddRows(1)} className={"plus-btn"}
+												                size={20}/>
+												{_hooverConfiguration.roomLength}m
+												<DashCircleFill onMouseDown={onAddRows(-1)} className={"minus-btn"}
+												                size={20}/>
+											</div>
+										</Button>
 									</div>
+									<div className={"fill-absolute overflow-hidden"}>
+										<div className={"room-grid-center-label"}>
+											My room
+										</div>
+									</div>
+									<div className={"room-grid-grow-div"}
+									     style={{
+										     width: (cellSize * _hooverConfiguration.roomWidth) + "px",
+										     height: (cellSize * _hooverConfiguration.roomLength) + "px"
+									     }}/>
 								</div>
-								<div className={"room-grid-grow-div"}
-								     style={{
-									     width: (cellSize * _hooverConfiguration.roomWidth) + "px",
-									     height: (cellSize * _hooverConfiguration.roomLength) + "px"
-								     }}/>
 							</div>
+						</Col>
+						<Col className={"col-1 d-flex align-items-center justify-content-center"}>
+							<Button className={"go-next-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
+								<ArrowRight size={30}/>
+							</Button>
 						</Col>
 					</Row>
 				</Container>
