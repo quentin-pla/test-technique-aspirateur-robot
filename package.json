@@ -1,5 +1,6 @@
 {
-    "name": "ihoover",
+    "homepage": "https://quentin-pla.github.io/test-technique-ihoover",
+    "name": "test-technique-ihoover",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -10,34 +11,37 @@
         "react": "^16.14.0",
         "react-bootstrap": "^2.2.3",
         "react-bootstrap-icons": "^1.8.1",
-      "react-dom": "^16.14.0",
-      "react-router-dom": "^5.2.0",
-      "react-scripts": "^5.0.0",
-      "sass": "^1.50.0"
-  },
-  "devDependencies": {
-    "typescript": "^4.5.5"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "node ./node_modules/react-scripts/bin/react-scripts.js build",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+        "react-dom": "^16.14.0",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "^5.0.0",
+        "sass": "^1.50.0"
+    },
+    "devDependencies": {
+        "typescript": "^4.5.5",
+        "gh-pages": "^3.2.3"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "node ./node_modules/react-scripts/bin/react-scripts.js build",
+        "eject": "react-scripts eject",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
 }
