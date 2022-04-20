@@ -1,5 +1,13 @@
 # Test Technique - Développeur Full Stack - iHoover
 
+Le but était de développer une application permettant de configurer un aspirateur robot.
+
+## Contexte
+
+L'utilisateur Martin vient d'acheter son tout nouvel aspirateur robot iHoover v4.
+Il s'est créé un compte, est déjà connecté et a enregistré son produit sur son compte.
+Il arrive donc sur la page de configuration du produit.
+
 ## Informations techniques
 
 L'application a été développée avec React et le language TypeScript.
