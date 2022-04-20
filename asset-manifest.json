@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/test-technique-ihoover/static/css/main.e9c46691.css",
+    "main.js": "/test-technique-ihoover/static/js/main.bc5fad21.js",
+    "static/media/configuration-background.jpg": "/test-technique-ihoover/static/media/configuration-background.7cd8a78b702583cd6977.jpg",
+    "index.html": "/test-technique-ihoover/index.html",
+    "main.e9c46691.css.map": "/test-technique-ihoover/static/css/main.e9c46691.css.map",
+    "main.bc5fad21.js.map": "/test-technique-ihoover/static/js/main.bc5fad21.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e9c46691.css",
+    "static/js/main.bc5fad21.js"
+  ]
+}
