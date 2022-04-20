@@ -336,7 +336,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 								<div className={"room-grid-delimiter"}>
 									{renderGrid}
 									<div className={"ihoover"} style={getHooverStyle()}>
-										<Image width={_cellSize + "px"} height={_cellSize + "px"} src={"/ihoover.svg"}/>
+										<Image width={_cellSize + "px"} height={_cellSize + "px"} src={"ihoover.svg"}/>
 									</div>
 								</div>
 							</div>
