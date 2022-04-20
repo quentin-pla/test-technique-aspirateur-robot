@@ -182,7 +182,7 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 											onClick={handleRotateHoover}
 											width={_cellSize + "px"}
 											height={_cellSize + "px"}
-											src={"/ihoover.svg"}
+											src={"ihoover.svg"}
 										/>
 										<CaretUpFill className={"direction-arrow"}/>
 									</div>
