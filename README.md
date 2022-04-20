@@ -2,6 +2,8 @@
 
 Le but était de développer une application permettant de configurer un aspirateur robot.
 
+[▶️ Démo](https://quentin-pla.github.io/test-technique-ihoover/)
+
 ## Contexte
 
 L'utilisateur Martin vient d'acheter son tout nouvel aspirateur robot iHoover v4.
