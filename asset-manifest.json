@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/test-technique-ihoover/static/css/main.e9c46691.css",
-    "main.js": "/test-technique-ihoover/static/js/main.7d523a7d.js",
+    "main.js": "/test-technique-ihoover/static/js/main.8f33db98.js",
     "static/media/configuration-background.jpg": "/test-technique-ihoover/static/media/configuration-background.7cd8a78b702583cd6977.jpg",
     "index.html": "/test-technique-ihoover/index.html",
     "main.e9c46691.css.map": "/test-technique-ihoover/static/css/main.e9c46691.css.map",
-    "main.7d523a7d.js.map": "/test-technique-ihoover/static/js/main.7d523a7d.js.map"
+    "main.8f33db98.js.map": "/test-technique-ihoover/static/js/main.8f33db98.js.map"
   },
   "entrypoints": [
     "static/css/main.e9c46691.css",
-    "static/js/main.7d523a7d.js"
+    "static/js/main.8f33db98.js"
   ]
 }
