@@ -18,8 +18,6 @@ Pour démarrer l'application, veuillez exécuter la commande suivante :
 
 ### Auteur
 
-![An old rock in the desert](https://media-exp1.licdn.com/dms/image/C4E03AQG_fm0_hQRStg/profile-displayphoto-shrink_800_800/0/1648813413895?e=1655942400&v=beta&t=l3GWjmqgki3OPMTvoZH9WkPmJ-nqtrQuVF948yd_cVs "Quentin PLA")
-
 Quentin PLA
 
 - Adresse mail : [quentin-pla@hotmail.fr](mailto:quentin-pla@hotmail.fr)
