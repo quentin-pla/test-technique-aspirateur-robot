@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/test-technique-ihoover/static/css/main.e9c46691.css",
-    "main.js": "/test-technique-ihoover/static/js/main.2fb5bff1.js",
-    "static/media/configuration-background.jpg": "/test-technique-ihoover/static/media/configuration-background.7cd8a78b702583cd6977.jpg",
-    "index.html": "/test-technique-ihoover/index.html",
-    "main.e9c46691.css.map": "/test-technique-ihoover/static/css/main.e9c46691.css.map",
-    "main.2fb5bff1.js.map": "/test-technique-ihoover/static/js/main.2fb5bff1.js.map"
+    "main.css": "/test-technique-aspirateur-robot/static/css/main.5fc12aa2.css",
+    "main.js": "/test-technique-aspirateur-robot/static/js/main.a44dca6b.js",
+    "static/media/configuration-background.jpg": "/test-technique-aspirateur-robot/static/media/configuration-background.7cd8a78b702583cd6977.jpg",
+    "index.html": "/test-technique-aspirateur-robot/index.html",
+    "main.5fc12aa2.css.map": "/test-technique-aspirateur-robot/static/css/main.5fc12aa2.css.map",
+    "main.a44dca6b.js.map": "/test-technique-aspirateur-robot/static/js/main.a44dca6b.js.map"
   },
   "entrypoints": [
-    "static/css/main.e9c46691.css",
-    "static/js/main.2fb5bff1.js"
+    "static/css/main.5fc12aa2.css",
+    "static/js/main.a44dca6b.js"
   ]
 }
