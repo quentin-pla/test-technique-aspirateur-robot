@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useRef, useState} from "react";
 import "./StepRoomSize.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, DashCircle, DashCircleFill, PlusCircle, PlusCircleFill} from "react-bootstrap-icons";
-import {ConfigurationStep, IHooverConfiguration} from "../../Configuration";
+import {ConfigurationStep, IAutoVacuumConfiguration} from "../../Configuration";
 import {resetLongPressTimeout, startLongPressTimeout} from "../../../../utils/utils";
 
 /**
@@ -11,9 +11,9 @@ import {resetLongPressTimeout, startLongPressTimeout} from "../../../../utils/ut
 interface IStepRoomSizeProps {
 	step: ConfigurationStep,
 	render: boolean,
-	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void,
-	showPreviousStep: (hooverConfiguration: IHooverConfiguration) => () => void,
-	hooverConfiguration: IHooverConfiguration
+	showNextStep: (vacuumConfiguration: IAutoVacuumConfiguration) => () => void,
+	showPreviousStep: (vacuumConfiguration: IAutoVacuumConfiguration) => () => void,
+	vacuumConfiguration: IAutoVacuumConfiguration
 }
 
 /**
@@ -21,7 +21,7 @@ interface IStepRoomSizeProps {
  */
 const StepRoomSize = (props: IStepRoomSizeProps) => {
 	const [_cellSize, _setCellSize] = useState<number>(0);
-	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
+	const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IAutoVacuumConfiguration>(props.vacuumConfiguration);
 	const gridRef = useRef<HTMLDivElement>(null);
 
 	/**
@@ -29,7 +29,7 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 	 */
 	useEffect(() => {
 		const handleResize = () => {
-			const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
+			const cellSize = getCellSize(_vacuumConfiguration.roomLength, _vacuumConfiguration.roomWidth);
 			_setCellSize(cellSize);
 		}
 		if (props.render) window.addEventListener('resize', handleResize);
@@ -37,18 +37,18 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 	}, [props.render])
 
 	/**
-	 * Handle hoover configuration change
+	 * Handle vacuum configuration change
 	 */
 	useEffect(() => {
-		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
+		const cellSize = getCellSize(_vacuumConfiguration.roomLength, _vacuumConfiguration.roomWidth);
 		_setCellSize(cellSize);
-	}, [_hooverConfiguration])
+	}, [_vacuumConfiguration])
 
 	/**
 	 * Handle render
 	 */
 	useEffect(() => {
-		if (props.render) _setHooverConfiguration({...props.hooverConfiguration});
+		if (props.render) _setVacuumConfiguration({...props.vacuumConfiguration});
 	}, [props.render])
 
 	/**
@@ -80,7 +80,7 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 	 * @param rowsToAdd number of rows to add
 	 */
 	const handleAddRows = (rowsToAdd: number) => () => {
-		const action = () => _setHooverConfiguration(prevConfiguration => ({
+		const action = () => _setVacuumConfiguration(prevConfiguration => ({
 			...prevConfiguration,
 			roomLength: addRows(prevConfiguration.roomLength, rowsToAdd)
 		}));
@@ -93,7 +93,7 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 	 * @param columnsToAdd number of columns to add
 	 */
 	const handleAddColumns = (columnsToAdd: number) => () => {
-		const action = () => _setHooverConfiguration(prevConfiguration => ({
+		const action = () => _setVacuumConfiguration(prevConfiguration => ({
 			...prevConfiguration,
 			roomWidth: addColumns(prevConfiguration.roomWidth, columnsToAdd)
 		}));
@@ -118,12 +118,12 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 	return useMemo(() => {
 		const isOnMobile = document.body.offsetWidth < 768;
 		const goBackButton = (
-			<Button className={"move-step-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
+			<Button className={"move-step-btn"} onClick={props.showPreviousStep(_vacuumConfiguration)}>
 				<ArrowLeft size={30}/>
 			</Button>
 		)
 		const goNextButton = (
-			<Button className={"move-step-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
+			<Button className={"move-step-btn"} onClick={props.showNextStep(_vacuumConfiguration)}>
 				<ArrowRight size={30}/>
 			</Button>
 		)
@@ -155,7 +155,7 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 												className={"minus-btn"}
 												onMouseDown={handleAddColumns(-1)}
 											/>
-											{_hooverConfiguration.roomWidth}m
+											{_vacuumConfiguration.roomWidth}m
 											<PlusCircleFill
 												size={20}
 												className={"plus-btn"}
@@ -174,7 +174,7 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 													className={"plus-btn"}
 													onMouseDown={handleAddRows(1)}
 												/>
-												{_hooverConfiguration.roomLength}m
+												{_vacuumConfiguration.roomLength}m
 												<DashCircleFill
 													size={20}
 													className={"minus-btn"}
@@ -190,8 +190,8 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 									</div>
 									<div className={"room-grid-grow-div"}
 									     style={{
-										     width: (_cellSize * _hooverConfiguration.roomWidth) + "px",
-										     height: (_cellSize * _hooverConfiguration.roomLength) + "px"
+										     width: (_cellSize * _vacuumConfiguration.roomWidth) + "px",
+										     height: (_cellSize * _vacuumConfiguration.roomLength) + "px"
 									     }}/>
 								</div>
 							</div>
@@ -207,7 +207,7 @@ const StepRoomSize = (props: IStepRoomSizeProps) => {
 				</Container>
 			</div>
 		)
-	}, [props.render, _hooverConfiguration, _cellSize]);
+	}, [props.render, _vacuumConfiguration, _cellSize]);
 }
 
 export default StepRoomSize;

@@ -19,7 +19,7 @@
     }
 }
 
-.ihoover {
+.autovacuum {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -32,7 +32,7 @@
     }
 }
 
-#step-hoover-location {
+#step-vacuum-location {
     padding-top: 100px;
 
     .room-grid {
@@ -51,7 +51,7 @@
             }
         }
 
-        .ihoover {
+        .autovacuum {
             img {
                 cursor: alias;
             }

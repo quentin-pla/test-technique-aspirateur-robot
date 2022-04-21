@@ -2,7 +2,7 @@ import React, {useMemo, useState} from "react";
 import "./Configuration.scss"
 import StepRoomSize from "./steps/roomSize/StepRoomSize";
 import StepStart from "./steps/start/StepStart";
-import StepHooverLocation from "./steps/hooverLocation/StepHooverLocation";
+import StepVacuumLocation from "./steps/vacuumLocation/StepVacuumLocation";
 import StepTest from "./steps/test/StepTest";
 import NavBar from "./NavBar";
 
@@ -12,14 +12,14 @@ import NavBar from "./NavBar";
 export enum ConfigurationStep {
 	Start = "step-start",
 	RoomSize = "step-room-size",
-	HooverLocation = "step-hoover-location",
+	VacuumLocation = "step-vacuum-location",
 	Test = "step-test"
 }
 
 /**
- * Hoover orientation
+ * Vacuum orientation
  */
-export enum HooverOrientation {
+export enum VacuumOrientation {
 	North = 0,
 	East = 90,
 	South = 180,
@@ -27,14 +27,14 @@ export enum HooverOrientation {
 }
 
 /**
- * Hoover configuration properties
+ * Vacuum configuration properties
  */
-export interface IHooverConfiguration {
+export interface IAutoVacuumConfiguration {
 	roomLength: number,
 	roomWidth: number,
 	xLocation: number,
 	yLocation: number,
-	orientation: HooverOrientation
+	orientation: VacuumOrientation
 }
 
 /**
@@ -43,14 +43,14 @@ export interface IHooverConfiguration {
 const stepsOrder = [
 	ConfigurationStep.Start,
 	ConfigurationStep.RoomSize,
-	ConfigurationStep.HooverLocation,
+	ConfigurationStep.VacuumLocation,
 	ConfigurationStep.Test
 ]
 
 /**
  * Default configuration
  */
-const defaultConfiguration: IHooverConfiguration = {
+const defaultConfiguration: IAutoVacuumConfiguration = {
 	roomLength: 5, roomWidth: 5, xLocation: 0, yLocation: 0, orientation: 0
 }
 
@@ -59,23 +59,23 @@ const defaultConfiguration: IHooverConfiguration = {
  */
 export const Configuration = () => {
 	const [_stepIndex, _setStepIndex] = useState<number>(0);
-	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(defaultConfiguration);
+	const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IAutoVacuumConfiguration>(defaultConfiguration);
 
 	/**
 	 * Show next step
-	 * @param hooverConfiguration hoover configuration in current step
+	 * @param vacuumConfiguration vacuum configuration in current step
 	 */
-	const showNextStep = (hooverConfiguration: IHooverConfiguration) => () => {
-		_setHooverConfiguration({...hooverConfiguration});
+	const showNextStep = (vacuumConfiguration: IAutoVacuumConfiguration) => () => {
+		_setVacuumConfiguration({...vacuumConfiguration});
 		_setStepIndex(_prevIndex => _prevIndex + 1);
 	}
 
 	/**
 	 * Show previous step
-	 * @param hooverConfiguration hoover configuration in current step
+	 * @param vacuumConfiguration vacuum configuration in current step
 	 */
-	const showPreviousStep = (hooverConfiguration: IHooverConfiguration) => () => {
-		_setHooverConfiguration({...hooverConfiguration});
+	const showPreviousStep = (vacuumConfiguration: IAutoVacuumConfiguration) => () => {
+		_setVacuumConfiguration({...vacuumConfiguration});
 		_setStepIndex(_prevIndex => _prevIndex - 1);
 	}
 
@@ -90,24 +90,24 @@ export const Configuration = () => {
 				<StepStart
 					step={ConfigurationStep.Start}
 					render={stepsOrder[_stepIndex] === ConfigurationStep.Start}
-					hooverConfiguration={_hooverConfiguration}
+					vacuumConfiguration={_vacuumConfiguration}
 					showNextStep={showNextStep}/>
 				<StepRoomSize
 					step={ConfigurationStep.RoomSize}
 					render={stepsOrder[_stepIndex] === ConfigurationStep.RoomSize}
-					hooverConfiguration={_hooverConfiguration}
+					vacuumConfiguration={_vacuumConfiguration}
 					showNextStep={showNextStep}
 					showPreviousStep={showPreviousStep}/>
-				<StepHooverLocation
-					step={ConfigurationStep.HooverLocation}
-					render={stepsOrder[_stepIndex] === ConfigurationStep.HooverLocation}
-					hooverConfiguration={_hooverConfiguration}
+				<StepVacuumLocation
+					step={ConfigurationStep.VacuumLocation}
+					render={stepsOrder[_stepIndex] === ConfigurationStep.VacuumLocation}
+					vacuumConfiguration={_vacuumConfiguration}
 					showNextStep={showNextStep}
 					showPreviousStep={showPreviousStep}/>
 				<StepTest
 					step={ConfigurationStep.Test}
 					render={stepsOrder[_stepIndex] === ConfigurationStep.Test}
-					hooverConfiguration={_hooverConfiguration}
+					vacuumConfiguration={_vacuumConfiguration}
 					showPreviousStep={showPreviousStep}/>
 			</div>
 		)

@@ -2,14 +2,14 @@ import React, {CSSProperties, useEffect, useMemo, useRef, useState} from "react"
 import "./StepTest.scss";
 import {Button, Col, Container, Image, Row, Toast, ToastContainer} from "react-bootstrap";
 import {ArrowLeft, X} from "react-bootstrap-icons";
-import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../../Configuration";
+import {ConfigurationStep, IAutoVacuumConfiguration, VacuumOrientation} from "../../Configuration";
 import {startLongPressTimeout} from "../../../../utils/utils";
 import InstructionsForm from "./InstructionsForm";
 
 /**
- * Hoover instruction
+ * Vacuum instruction
  */
-export enum HooverInstruction {
+export enum VacuumInstruction {
 	GoFront, RotateLeft, RotateRight
 }
 
@@ -37,8 +37,8 @@ interface IExecutionResult {
 interface ITestConfigurationProps {
 	step: ConfigurationStep,
 	render: boolean,
-	showPreviousStep: (hooverConfiguration: IHooverConfiguration) => () => void,
-	hooverConfiguration: IHooverConfiguration
+	showPreviousStep: (vacuumConfiguration: IAutoVacuumConfiguration) => () => void,
+	vacuumConfiguration: IAutoVacuumConfiguration
 }
 
 // Animation interval
@@ -51,7 +51,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 	const [_grid, _setGrid] = useState<Array<Array<string>>>(new Array<Array<string>>())
 	const [_cellSize, _setCellSize] = useState<number>(0);
 	const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
-	const [_instructions, _setInstructions] = useState<Array<HooverInstruction>>(new Array<HooverInstruction>());
+	const [_instructions, _setInstructions] = useState<Array<VacuumInstruction>>(new Array<VacuumInstruction>());
 	const [_maxInstructions] = useState<number>(30);
 	const [_animationConfiguration, _setAnimationConfiguration] = useState<IAnimationConfiguration | null>(null);
 	const [_executionResult, _setExecutionResult] = useState<IExecutionResult | null>(null);
@@ -63,7 +63,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 */
 	useEffect(() => {
 		const handleResize = () => {
-			const cellSize = getCellSize(props.hooverConfiguration.roomLength, props.hooverConfiguration.roomWidth);
+			const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
 			_setCellSize(cellSize);
 		}
 		if (props.render) window.addEventListener('resize', handleResize);
@@ -77,13 +77,13 @@ const StepTest = (props: ITestConfigurationProps) => {
 		if (!props.render) return;
 		_setAllowTransitions(false);
 		setTimeout(() => _setAllowTransitions(true), 300);
-		const isSameGrid = props.hooverConfiguration.roomLength === _grid.length &&
-			props.hooverConfiguration.roomWidth === _grid[0].length;
+		const isSameGrid = props.vacuumConfiguration.roomLength === _grid.length &&
+			props.vacuumConfiguration.roomWidth === _grid[0].length;
 		if (isSameGrid) return;
-		const rows = Array.from(Array(props.hooverConfiguration.roomLength).keys());
-		const columns = Array.from(Array(props.hooverConfiguration.roomWidth).keys());
+		const rows = Array.from(Array(props.vacuumConfiguration.roomLength).keys());
+		const columns = Array.from(Array(props.vacuumConfiguration.roomWidth).keys());
 		const grid = rows.map(row => columns.map(column => row + "," + column));
-		const cellSize = getCellSize(props.hooverConfiguration.roomLength, props.hooverConfiguration.roomWidth);
+		const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
 		_setCellSize(cellSize);
 		_setGrid(grid);
 	}, [props.render])
@@ -112,7 +112,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 	/**
 	 * On add instruction
 	 */
-	const onAddInstruction = (instruction: HooverInstruction) => () => {
+	const onAddInstruction = (instruction: VacuumInstruction) => () => {
 		const action = () => _setInstructions(prevInstructions => {
 			if (prevInstructions.length === _maxInstructions) return prevInstructions;
 			return [...prevInstructions, instruction];
@@ -154,7 +154,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 				setTimeout(() => _setAnimationConfiguration(prevConfig => {
 					if (!prevConfig) return null;
 					const orientation = getOrientationFromAngle(prevConfig.angle);
-					const orientationLabel = HooverOrientation[orientation];
+					const orientationLabel = VacuumOrientation[orientation];
 					_setExecutionResult({
 						xLocation: prevConfig.x,
 						yLocation: prevConfig.y,
@@ -178,41 +178,41 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 * Animate instruction
 	 * @param instruction
 	 */
-	const animateInstruction = (instruction: HooverInstruction) => {
+	const animateInstruction = (instruction: VacuumInstruction) => {
 		_setAnimationConfiguration(prevConfig => {
 			const animationConfiguration: IAnimationConfiguration = !!prevConfig ? {...prevConfig} : {
-				x: props.hooverConfiguration.xLocation,
-				y: props.hooverConfiguration.yLocation,
-				angle: props.hooverConfiguration.orientation
+				x: props.vacuumConfiguration.xLocation,
+				y: props.vacuumConfiguration.yLocation,
+				angle: props.vacuumConfiguration.orientation
 			}
 			switch (instruction) {
-				case HooverInstruction.GoFront:
+				case VacuumInstruction.GoFront:
 					const orientation = getOrientationFromAngle(animationConfiguration.angle);
 					let x = animationConfiguration.x;
 					let y = animationConfiguration.y;
 					switch (orientation) {
-						case HooverOrientation.North:
+						case VacuumOrientation.North:
 							y += 1;
-							if (y < props.hooverConfiguration.roomLength) animationConfiguration.y = y;
+							if (y < props.vacuumConfiguration.roomLength) animationConfiguration.y = y;
 							break;
-						case HooverOrientation.East:
+						case VacuumOrientation.East:
 							x += 1;
-							if (x < props.hooverConfiguration.roomWidth) animationConfiguration.x = x;
+							if (x < props.vacuumConfiguration.roomWidth) animationConfiguration.x = x;
 							break;
-						case HooverOrientation.South:
+						case VacuumOrientation.South:
 							y -= 1;
 							if (y >= 0) animationConfiguration.y = y;
 							break;
-						case HooverOrientation.West:
+						case VacuumOrientation.West:
 							x -= 1;
 							if (x >= 0) animationConfiguration.x = x;
 							break;
 					}
 					break;
-				case HooverInstruction.RotateLeft:
+				case VacuumInstruction.RotateLeft:
 					animationConfiguration.angle -= 90;
 					break;
-				case HooverInstruction.RotateRight:
+				case VacuumInstruction.RotateRight:
 					animationConfiguration.angle += 90;
 					break;
 
@@ -225,19 +225,19 @@ const StepTest = (props: ITestConfigurationProps) => {
 	 * Get orientation from angle
 	 * @param angle angle in degrees
 	 */
-	const getOrientationFromAngle = (angle: number): HooverOrientation => {
+	const getOrientationFromAngle = (angle: number): VacuumOrientation => {
 		const rest = angle % 360;
-		if (rest === 0) return HooverOrientation.North;
-		else if (rest === 90 || rest === -270) return HooverOrientation.East;
-		else if (rest === 180 || rest === -180) return HooverOrientation.South;
-		else if (rest === 270 || rest === -90) return HooverOrientation.West;
-		return HooverOrientation.North;
+		if (rest === 0) return VacuumOrientation.North;
+		else if (rest === 90 || rest === -270) return VacuumOrientation.East;
+		else if (rest === 180 || rest === -180) return VacuumOrientation.South;
+		else if (rest === 270 || rest === -90) return VacuumOrientation.West;
+		return VacuumOrientation.North;
 	}
 
 	/**
-	 * Get hoover style properties
+	 * Get vacuum style properties
 	 */
-	const getHooverStyle = (): CSSProperties => {
+	const getVacuumStyle = (): CSSProperties => {
 		if (!!_animationConfiguration) {
 			return {
 				bottom: (_animationConfiguration.y * _cellSize) + "px",
@@ -246,9 +246,9 @@ const StepTest = (props: ITestConfigurationProps) => {
 			};
 		}
 		return {
-			bottom: (props.hooverConfiguration.yLocation * _cellSize) + "px",
-			left: (props.hooverConfiguration.xLocation * _cellSize) + "px",
-			transform: "rotate(" + props.hooverConfiguration.orientation + "deg) scale(0.7)"
+			bottom: (props.vacuumConfiguration.yLocation * _cellSize) + "px",
+			left: (props.vacuumConfiguration.xLocation * _cellSize) + "px",
+			transform: "rotate(" + props.vacuumConfiguration.orientation + "deg) scale(0.7)"
 		};
 	}
 
@@ -306,7 +306,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 
 	return useMemo(() => {
 		const goBackButton = (
-			<Button className={"move-step-btn"} onClick={props.showPreviousStep(props.hooverConfiguration)}>
+			<Button className={"move-step-btn"} onClick={props.showPreviousStep(props.vacuumConfiguration)}>
 				<ArrowLeft size={30}/>
 			</Button>
 		)
@@ -322,7 +322,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 								<h2>Test your configuration</h2>
 								<p>Select actions and click start to execute them</p>
 								<InstructionsForm
-									hooverConfiguration={props.hooverConfiguration}
+									vacuumConfiguration={props.vacuumConfiguration}
 									instructions={_instructions}
 									isAnimationInProgress={!!_animationConfiguration}
 									onRemoveInstruction={onRemoveInstruction}
@@ -335,8 +335,9 @@ const StepTest = (props: ITestConfigurationProps) => {
 							<div ref={gridRef} className={"room-grid"}>
 								<div className={"room-grid-delimiter"}>
 									{renderGrid}
-									<div className={"ihoover"} style={getHooverStyle()}>
-										<Image width={_cellSize + "px"} height={_cellSize + "px"} src={"ihoover.svg"}/>
+									<div className={"autovacuum"} style={getVacuumStyle()}>
+										<Image width={_cellSize + "px"} height={_cellSize + "px"}
+										       src={"autovacuum.svg"}/>
 									</div>
 								</div>
 							</div>
@@ -350,7 +351,7 @@ const StepTest = (props: ITestConfigurationProps) => {
 				{renderExecutionResult}
 			</div>
 		)
-	}, [props.hooverConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _showExecutionResult, _cellSize]);
+	}, [props.vacuumConfiguration, _grid, _allowTransitions, _instructions, _animationConfiguration, _showExecutionResult, _cellSize]);
 }
 
 export default StepTest;

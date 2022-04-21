@@ -1,18 +1,18 @@
 import React, {useMemo} from "react";
-import {HooverInstruction} from "./StepTest";
+import {VacuumInstruction} from "./StepTest";
 import {Button, Col, Row} from "react-bootstrap";
 import {resetLongPressTimeout} from "../../../../utils/utils";
 import {ArrowClockwise, ArrowCounterclockwise, ArrowUp, BackspaceFill, PlayFill, StopFill} from "react-bootstrap-icons";
-import {IHooverConfiguration} from "../../Configuration";
+import {IAutoVacuumConfiguration} from "../../Configuration";
 
 /**
  * Instructions form props
  */
 interface IInstructionsFormProps {
-	hooverConfiguration: IHooverConfiguration,
-	instructions: Array<HooverInstruction>,
+	vacuumConfiguration: IAutoVacuumConfiguration,
+	instructions: Array<VacuumInstruction>,
 	isAnimationInProgress: boolean,
-	onAddInstruction: (instruction: HooverInstruction) => () => void,
+	onAddInstruction: (instruction: VacuumInstruction) => () => void,
 	onRemoveInstruction: () => void,
 	onExecuteInstructions: () => void,
 	onStopInstructionsExecution: () => void,
@@ -25,16 +25,16 @@ interface IInstructionsFormProps {
 const InstructionsForm = (props: IInstructionsFormProps) => {
 	/**
 	 * Render instruction
-	 * @param instruction hoover instruction
+	 * @param instruction vacuum instruction
 	 * @param index instruction index
 	 */
-	const renderInstruction = (instruction: HooverInstruction, index: number) => {
+	const renderInstruction = (instruction: VacuumInstruction, index: number) => {
 		switch (instruction) {
-			case HooverInstruction.GoFront:
+			case VacuumInstruction.GoFront:
 				return <ArrowUp key={"instruction-go-front-" + index}/>;
-			case HooverInstruction.RotateLeft:
+			case VacuumInstruction.RotateLeft:
 				return <ArrowCounterclockwise key={"instruction-rotate left-" + index}/>;
-			case HooverInstruction.RotateRight:
+			case VacuumInstruction.RotateRight:
 				return <ArrowClockwise key={"instruction-rotate-right-" + index}/>;
 			default:
 				throw new Error("Instruction '" + instruction + "' does not exist");
@@ -50,15 +50,15 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 					<Row className={"d-flex align-items-center justify-content-center"}>
 						<Col className={"col-auto d-flex gap-2 mb-3"}>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={props.onAddInstruction(HooverInstruction.RotateLeft)}>
+							        onMouseDown={props.onAddInstruction(VacuumInstruction.RotateLeft)}>
 								<ArrowCounterclockwise/>
 							</Button>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={props.onAddInstruction(HooverInstruction.GoFront)}>
+							        onMouseDown={props.onAddInstruction(VacuumInstruction.GoFront)}>
 								<ArrowUp/>
 							</Button>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={props.onAddInstruction(HooverInstruction.RotateRight)}>
+							        onMouseDown={props.onAddInstruction(VacuumInstruction.RotateRight)}>
 								<ArrowClockwise/>
 							</Button>
 						</Col>
@@ -90,7 +90,7 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 				</Col>
 			</Row>
 		)
-	}, [props.hooverConfiguration, props.instructions, props.isAnimationInProgress])
+	}, [props.vacuumConfiguration, props.instructions, props.isAnimationInProgress])
 }
 
 export default InstructionsForm;

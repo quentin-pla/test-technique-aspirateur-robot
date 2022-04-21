@@ -1,28 +1,28 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import "./StepHooverLocation.scss";
+import "./StepVacuumLocation.scss";
 import {Button, Col, Container, Image, Row} from "react-bootstrap";
 import {ArrowLeft, ArrowRight, CaretUpFill} from "react-bootstrap-icons";
-import {ConfigurationStep, HooverOrientation, IHooverConfiguration} from "../../Configuration";
+import {ConfigurationStep, IAutoVacuumConfiguration, VacuumOrientation} from "../../Configuration";
 
 /**
- * Hoover location step props
+ * Vacuum location step props
  */
-interface IStepHooverLocationProps {
+interface IStepVacuumLocationProps {
 	step: ConfigurationStep,
 	render: boolean,
-	showNextStep: (hooverConfiguration: IHooverConfiguration) => () => void,
-	showPreviousStep: (hooverConfiguration: IHooverConfiguration) => () => void,
-	hooverConfiguration: IHooverConfiguration
+	showNextStep: (vacuumConfiguration: IAutoVacuumConfiguration) => () => void,
+	showPreviousStep: (vacuumConfiguration: IAutoVacuumConfiguration) => () => void,
+	vacuumConfiguration: IAutoVacuumConfiguration
 }
 
 /**
- * Hoover location step
+ * Vacuum location step
  */
-const StepHooverLocation = (props: IStepHooverLocationProps) => {
+const StepVacuumLocation = (props: IStepVacuumLocationProps) => {
 	const [_grid, _setGrid] = useState<Array<Array<string>>>(new Array<Array<string>>())
-	const [_hooverConfiguration, _setHooverConfiguration] = useState<IHooverConfiguration>(props.hooverConfiguration);
+	const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IAutoVacuumConfiguration>(props.vacuumConfiguration);
 	const [_cellSize, _setCellSize] = useState<number>(0);
-	const [_hooverRotation, _setHooverRotation] = useState<number>(0);
+	const [_vacuumRotation, _setVacuumRotation] = useState<number>(0);
 	const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
 	const gridRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +31,7 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 	 */
 	useEffect(() => {
 		const handleResize = () => {
-			const cellSize = getCellSize(props.hooverConfiguration.roomLength, props.hooverConfiguration.roomWidth);
+			const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
 			_setCellSize(cellSize);
 		}
 		if (props.render) {
@@ -50,28 +50,28 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 		if (!props.render) return;
 		_setAllowTransitions(false);
 		setTimeout(() => _setAllowTransitions(true), 300);
-		const isXLocationOut = props.hooverConfiguration.xLocation >= props.hooverConfiguration.roomWidth;
-		const isYLocationOut = props.hooverConfiguration.yLocation >= props.hooverConfiguration.roomLength;
-		const config = {...props.hooverConfiguration}
-		if (isXLocationOut) config.xLocation = props.hooverConfiguration.roomWidth - 1;
-		if (isYLocationOut) config.yLocation = props.hooverConfiguration.roomLength - 1;
-		_setHooverConfiguration(config);
+		const isXLocationOut = props.vacuumConfiguration.xLocation >= props.vacuumConfiguration.roomWidth;
+		const isYLocationOut = props.vacuumConfiguration.yLocation >= props.vacuumConfiguration.roomLength;
+		const config = {...props.vacuumConfiguration}
+		if (isXLocationOut) config.xLocation = props.vacuumConfiguration.roomWidth - 1;
+		if (isYLocationOut) config.yLocation = props.vacuumConfiguration.roomLength - 1;
+		_setVacuumConfiguration(config);
 	}, [props.render])
 
 	/**
-	 * Handle hoover configuration change
+	 * Handle vacuum configuration change
 	 */
 	useEffect(() => {
 		// Do not update grid if size is the same
-		if (_hooverConfiguration.roomLength === _grid.length &&
-			_hooverConfiguration.roomWidth === _grid[0].length) return;
-		const rows = Array.from(Array(_hooverConfiguration.roomLength).keys());
-		const columns = Array.from(Array(_hooverConfiguration.roomWidth).keys());
+		if (_vacuumConfiguration.roomLength === _grid.length &&
+			_vacuumConfiguration.roomWidth === _grid[0].length) return;
+		const rows = Array.from(Array(_vacuumConfiguration.roomLength).keys());
+		const columns = Array.from(Array(_vacuumConfiguration.roomWidth).keys());
 		const grid = rows.map(row => columns.map(column => column + "," + row));
-		const cellSize = getCellSize(_hooverConfiguration.roomLength, _hooverConfiguration.roomWidth);
+		const cellSize = getCellSize(_vacuumConfiguration.roomLength, _vacuumConfiguration.roomWidth);
 		_setCellSize(cellSize);
 		_setGrid(grid);
-	}, [_hooverConfiguration])
+	}, [_vacuumConfiguration])
 
 	/**
 	 * Get cell size
@@ -88,26 +88,26 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 	}
 
 	/**
-	 * Handle rotate hoover
+	 * Handle rotate vacuum
 	 */
-	const handleRotateHoover = () => {
-		_setHooverRotation(prevAngle => prevAngle + 90);
-		_setHooverConfiguration(prevConfig => {
+	const handleRotateVacuum = () => {
+		_setVacuumRotation(prevAngle => prevAngle + 90);
+		_setVacuumConfiguration(prevConfig => {
 			let angle = prevConfig.orientation + 90;
 			if (angle >= 360) angle = 0;
-			let orientation: HooverOrientation;
+			let orientation: VacuumOrientation;
 			switch (angle) {
 				case 0:
-					orientation = HooverOrientation.North;
+					orientation = VacuumOrientation.North;
 					break;
 				case 90:
-					orientation = HooverOrientation.East;
+					orientation = VacuumOrientation.East;
 					break;
 				case 180:
-					orientation = HooverOrientation.South;
+					orientation = VacuumOrientation.South;
 					break;
 				case 270:
-					orientation = HooverOrientation.West;
+					orientation = VacuumOrientation.West;
 					break;
 				default:
 					throw new Error("Angle " + angle + "deg does not correspond to any orientation");
@@ -123,7 +123,7 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 		const [x, y] = location.split(",");
 		const xLocation = parseInt(x);
 		const yLocation = parseInt(y);
-		_setHooverConfiguration(prevConfig => {
+		_setVacuumConfiguration(prevConfig => {
 			return {...prevConfig, xLocation, yLocation}
 		});
 	}
@@ -146,19 +146,19 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 
 	return useMemo(() => {
 		const goBackButton = (
-			<Button className={"move-step-btn"} onClick={props.showPreviousStep(_hooverConfiguration)}>
+			<Button className={"move-step-btn"} onClick={props.showPreviousStep(_vacuumConfiguration)}>
 				<ArrowLeft size={30}/>
 			</Button>
 		)
 		const goNextButton = (
-			<Button className={"move-step-btn"} onClick={props.showNextStep(_hooverConfiguration)}>
+			<Button className={"move-step-btn"} onClick={props.showNextStep(_vacuumConfiguration)}>
 				<ArrowRight size={30}/>
 			</Button>
 		)
-		const hooverImageStyle = {
-			bottom: (_hooverConfiguration.yLocation * _cellSize) + "px",
-			left: (_hooverConfiguration.xLocation * _cellSize) + "px",
-			transform: "rotate(" + _hooverRotation + "deg) scale(0.7)"
+		const vacuumImageStyle = {
+			bottom: (_vacuumConfiguration.yLocation * _cellSize) + "px",
+			left: (_vacuumConfiguration.xLocation * _cellSize) + "px",
+			transform: "rotate(" + _vacuumRotation + "deg) scale(0.7)"
 		}
 		return (
 			<div id={props.step} className={"fullscreen-window " + (_allowTransitions ? "" : "no-transition")}>
@@ -170,19 +170,19 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 						<Col className={"col-12 col-md-10 d-flex flex-column"}>
 							<div
 								className={"d-flex flex-column justify-content-center align-items-center mb-2 text-center "}>
-								<h2>Place hoover in the room</h2>
-								<p>To place the hoover, click on a cell</p>
-								<p>Select the orientation by clicking on the hoover</p>
+								<h2>Place vacuum in the room</h2>
+								<p>To place the vacuum, click on a cell</p>
+								<p>Select the orientation by clicking on the vacuum</p>
 							</div>
 							<div ref={gridRef} className={"room-grid"}>
 								<div className={"room-grid-delimiter"}>
 									{renderGrid}
-									<div className={"ihoover"} style={hooverImageStyle}>
+									<div className={"autovacuum"} style={vacuumImageStyle}>
 										<Image
-											onClick={handleRotateHoover}
+											onClick={handleRotateVacuum}
 											width={_cellSize + "px"}
 											height={_cellSize + "px"}
-											src={"ihoover.svg"}
+											src={"autovacuum.svg"}
 										/>
 										<CaretUpFill className={"direction-arrow"}/>
 									</div>
@@ -200,7 +200,7 @@ const StepHooverLocation = (props: IStepHooverLocationProps) => {
 				</Container>
 			</div>
 		)
-	}, [props.render, _hooverConfiguration, _grid, _allowTransitions, _cellSize]);
+	}, [props.render, _vacuumConfiguration, _grid, _allowTransitions, _cellSize]);
 }
 
-export default StepHooverLocation;
+export default StepVacuumLocation;

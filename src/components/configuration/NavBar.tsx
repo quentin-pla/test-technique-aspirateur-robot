@@ -51,10 +51,10 @@ const NavBar = (props: INavBarProps) => {
 	return useMemo(() => (
 		<Container fluid className={"navbar"} style={props.style}>
 			<Row className={"w-100"}>
-				<Col className={"col-4 hoover-background"}>
+				<Col className={"col-4 vacuum-background"}>
 					<Row>
 						<Col className={"col-12"}>
-							<span id={"logo"} style={{color: _logoColor}}>iHoover</span>
+							<span id={"logo"} style={{color: _logoColor}}>AutoVacuum</span>
 						</Col>
 					</Row>
 				</Col>

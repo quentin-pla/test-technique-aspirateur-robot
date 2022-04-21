@@ -1,14 +1,13 @@
-# Test Technique - Développeur Full Stack - iHoover
+# Test Technique - Développeur Full Stack - AutoVacuum
 
 Le but était de développer une application permettant de configurer un aspirateur robot.
 
-[▶️ Démo](https://quentin-pla.github.io/test-technique-ihoover/)
+[▶️ Démo](https://quentin-pla.github.io/test-technique-autovacuum/)
 
 ## Contexte
 
-L'utilisateur Martin vient d'acheter son tout nouvel aspirateur robot iHoover v4.
-Il s'est créé un compte, est déjà connecté et a enregistré son produit sur son compte.
-Il arrive donc sur la page de configuration du produit.
+L'utilisateur Martin vient d'acheter son tout nouvel aspirateur robot AutoVacuum v4. Il s'est créé un compte, est déjà
+connecté et a enregistré son produit sur son compte. Il arrive donc sur la page de configuration du produit.
 
 ## Informations techniques
 

@@ -9,7 +9,7 @@ import {Configuration} from "./components/configuration/Configuration";
 export const App = () => {
 	return (
 		<BrowserRouter>
-			<Route exact path={"/test-technique-ihoover"}>
+			<Route exact path={"/test-technique-aspirateur-robot"}>
 				<Configuration/>
 			</Route>
 		</BrowserRouter>
