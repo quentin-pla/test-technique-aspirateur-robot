@@ -1,33 +1,22 @@
 import React, {useMemo} from "react";
-import {VacuumInstruction} from "./StepTest";
 import {Button, Col, Row} from "react-bootstrap";
-import {resetLongPressTimeout} from "../../../../utils/utils";
+import {clearLongPress} from "../../../../utils/utils";
 import {ArrowClockwise, ArrowCounterclockwise, ArrowUp, BackspaceFill, PlayFill, StopFill} from "react-bootstrap-icons";
-import {IAutoVacuumConfiguration} from "../../Configuration";
+import {IAutoVacuumConfiguration} from "../../hooks/useConfiguration";
+import {VacuumInstruction} from "./hooks/useTest";
 
-/**
- * Instructions form props
- */
 interface IInstructionsFormProps {
 	vacuumConfiguration: IAutoVacuumConfiguration,
 	instructions: Array<VacuumInstruction>,
 	isAnimationInProgress: boolean,
-	onAddInstruction: (instruction: VacuumInstruction) => () => void,
-	onRemoveInstruction: () => void,
-	onExecuteInstructions: () => void,
-	onStopInstructionsExecution: () => void,
+	handleAddInstruction: (instruction: VacuumInstruction) => () => void,
+	handleRemoveInstruction: () => void,
+	handleExecuteInstructions: () => void,
+	handleStopInstructionsExecution: () => void,
 	maxInstructions: number,
 }
 
-/**
- * Instructions form
- */
 const InstructionsForm = (props: IInstructionsFormProps) => {
-	/**
-	 * Render instruction
-	 * @param instruction vacuum instruction
-	 * @param index instruction index
-	 */
 	const renderInstruction = (instruction: VacuumInstruction, index: number) => {
 		switch (instruction) {
 			case VacuumInstruction.GoFront:
@@ -46,26 +35,26 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 		return (
 			<Row className={"d-flex flex-column mt-3"}>
 				<Col className={"col-12"}
-				     onMouseUp={resetLongPressTimeout}>
+					 onMouseUp={clearLongPress}>
 					<Row className={"d-flex align-items-center justify-content-center"}>
 						<Col className={"col-auto d-flex gap-2 mb-3"}>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={props.onAddInstruction(VacuumInstruction.RotateLeft)}>
+									onMouseDown={props.handleAddInstruction(VacuumInstruction.RotateLeft)}>
 								<ArrowCounterclockwise/>
 							</Button>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={props.onAddInstruction(VacuumInstruction.GoFront)}>
+									onMouseDown={props.handleAddInstruction(VacuumInstruction.GoFront)}>
 								<ArrowUp/>
 							</Button>
 							<Button disabled={areInstructionsButtonsDisabled} className={"instruction-btn"}
-							        onMouseDown={props.onAddInstruction(VacuumInstruction.RotateRight)}>
+									onMouseDown={props.handleAddInstruction(VacuumInstruction.RotateRight)}>
 								<ArrowClockwise/>
 							</Button>
 						</Col>
 						<Col className={"col-auto mb-3"}>
 							<div className={"instructions-input"}>
 								{props.instructions.map((instruction, index) => renderInstruction(instruction, index))}
-								<div className={"back"} onMouseDown={props.onRemoveInstruction}>
+								<div className={"back"} onMouseDown={props.handleRemoveInstruction}>
 									{!props.isAnimationInProgress ? <BackspaceFill/> : null}
 								</div>
 							</div>
@@ -75,13 +64,13 @@ const InstructionsForm = (props: IInstructionsFormProps) => {
 								<Button
 									className={"d-flex justify-content-center align-items-center gap-1 execution-btn "
 										+ (props.instructions.length <= 0 ? "disabled" : "")}
-									onClick={props.onExecuteInstructions}>
+									onClick={props.handleExecuteInstructions}>
 									Start <PlayFill size={20}/>
 								</Button>
 								:
 								<Button
 									className={"d-flex justify-content-center align-items-center gap-1 execution-btn toggled"}
-									onClick={props.onStopInstructionsExecution}>
+									onClick={props.handleStopInstructionsExecution}>
 									Stop <StopFill size={20}/>
 								</Button>
 							}
