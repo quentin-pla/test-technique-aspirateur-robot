@@ -28,13 +28,8 @@ const useVacuumLocation = (props: {
             const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
             _setCellSize(cellSize);
         }
-        if (props.allowRendering) {
-            window.addEventListener('resize', handleResize);
-            console.log("add")
-        } else {
-            window.removeEventListener('resize', handleResize);
-            console.log("remove")
-        }
+        if (props.allowRendering) window.addEventListener('resize', handleResize);
+        else window.removeEventListener('resize', handleResize);
     }, [props.allowRendering])
 
     useEffect(() => {

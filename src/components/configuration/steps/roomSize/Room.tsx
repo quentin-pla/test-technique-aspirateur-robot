@@ -24,7 +24,7 @@ const Room = (props: IRoomProps) => {
                 </div>
             </div>
         )
-    }, [])
+    }, [rendering.configuration.roomGrowDiv.style])
 }
 
 export default Room;
