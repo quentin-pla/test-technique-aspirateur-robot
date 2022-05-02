@@ -17,17 +17,18 @@ interface IUseRoomRendering {
 }
 
 const useRoomRendering = (props: IRoomProps): IUseRoomRendering => {
+    const {cellSize, vacuumConfiguration, handleIncreaseRoomLength, handleIncreaseRoomWidth} = props;
 
     const getRenderConfig = useCallback((): IUseRoomRenderConfig => {
         return {
             roomGrowDiv: {
                 style: {
-                    width: (props.cellSize * props.vacuumConfiguration.roomWidth) + "px",
-                    height: (props.cellSize * props.vacuumConfiguration.roomLength) + "px"
+                    width: (cellSize * vacuumConfiguration.roomWidth) + "px",
+                    height: (cellSize * vacuumConfiguration.roomLength) + "px"
                 }
             }
         };
-    }, [props.cellSize, props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth])
+    }, [cellSize, vacuumConfiguration.roomLength, vacuumConfiguration.roomWidth])
 
     const renderLengthButtons = useMemo(() => (
         <div className={"room-grid-x-btn"}>
@@ -37,18 +38,18 @@ const useRoomRendering = (props: IRoomProps): IUseRoomRendering => {
                     <PlusCircleFill
                         size={20}
                         className={"plus-btn"}
-                        onMouseDown={props.handleIncreaseRoomLength(1)}
+                        onMouseDown={handleIncreaseRoomLength(1)}
                     />
-                    {props.vacuumConfiguration.roomLength}m
+                    {vacuumConfiguration.roomLength}m
                     <DashCircleFill
                         size={20}
                         className={"minus-btn"}
-                        onMouseDown={props.handleIncreaseRoomLength(-1)}
+                        onMouseDown={handleIncreaseRoomLength(-1)}
                     />
                 </div>
             </Button>
         </div>
-    ), [props.vacuumConfiguration])
+    ), [vacuumConfiguration])
 
     const renderWidthButtons = useMemo(() => (
         <div className={"room-grid-y-btn"}>
@@ -57,18 +58,18 @@ const useRoomRendering = (props: IRoomProps): IUseRoomRendering => {
                     <DashCircleFill
                         size={20}
                         className={"minus-btn"}
-                        onMouseDown={props.handleIncreaseRoomWidth(-1)}
+                        onMouseDown={handleIncreaseRoomWidth(-1)}
                     />
-                    {props.vacuumConfiguration.roomWidth}m
+                    {vacuumConfiguration.roomWidth}m
                     <PlusCircleFill
                         size={20}
                         className={"plus-btn"}
-                        onMouseDown={props.handleIncreaseRoomWidth(1)}
+                        onMouseDown={handleIncreaseRoomWidth(1)}
                     />
                 </div>
             </Button>
         </div>
-    ), [props.vacuumConfiguration])
+    ), [vacuumConfiguration])
 
     const renderRoomLabel = useMemo(() => (
         <div className={"fill-absolute overflow-hidden"}>

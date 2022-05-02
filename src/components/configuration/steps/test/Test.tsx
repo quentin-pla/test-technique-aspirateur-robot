@@ -13,12 +13,13 @@ export interface ITestProps {
 }
 
 const Test = (props: ITestProps) => {
+	const {step, vacuumConfiguration} = props;
 	const state = useTest(props);
 	const rendering = useTestRendering({...props, ...state});
 
 	return useMemo(() => {
 		return (
-			<div id={props.step} className={"fullscreen-window " + (state.allowTransitions ? "" : "no-transition")}>
+			<div id={step} className={"fullscreen-window " + (state.allowTransitions ? "" : "no-transition")}>
 				<Container fluid className={"h-100 pb-md-5"}>
 					<Row className={"h-100"}>
 						<Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
@@ -45,7 +46,7 @@ const Test = (props: ITestProps) => {
 				{rendering.executionResult}
 			</div>
 		)
-	}, [props.vacuumConfiguration, state.grid, state.allowTransitions, state.instructions, state.animationConfiguration, state.showExecutionResult, state.cellSize]);
+	}, [vacuumConfiguration, state.grid, state.allowTransitions, state.instructions, state.animationConfiguration, state.showExecutionResult, state.cellSize]);
 }
 
 export default Test;

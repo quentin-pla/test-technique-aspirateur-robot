@@ -22,6 +22,16 @@ interface IUseVacuumLocationRendering {
 const useVacuumLocationRendering = (
     props: IUseVacuumLocation & Pick<IVacuumLocationProps, "showNextStep" | "showPreviousStep">
 ): IUseVacuumLocationRendering => {
+    const {
+        vacuumConfiguration,
+        grid,
+        cellSize,
+        vacuumRotation,
+        handleLocationSelection,
+        showPreviousStep,
+        showNextStep
+    } = props;
+
     const renderHeader = useMemo(() => {
         return (
             <div
@@ -34,37 +44,37 @@ const useVacuumLocationRendering = (
     }, [])
 
     const renderGrid = useMemo(() => {
-        return props.grid.reverse().map((row, rowIndex) => (
+        return grid.reverse().map((row, rowIndex) => (
             <div key={"row-" + rowIndex} className={"room-grid-row"}>
                 {row.map((column, columnIndex) => (
                     <div key={"column-" + columnIndex} className={"room-grid-cell"}
-                         onClick={props.handleLocationSelection(row[columnIndex])}
-                         style={{width: props.cellSize + "px", height: props.cellSize + "px"}}>
+                         onClick={handleLocationSelection(row[columnIndex])}
+                         style={{width: cellSize + "px", height: cellSize + "px"}}>
                     </div>
                 ))}
             </div>
         ))
-    }, [props.grid, props.cellSize]);
+    }, [grid, cellSize]);
 
     const renderPreviousStepBtn = useMemo(() => (
-        <Button className={"move-step-btn"} onClick={props.showPreviousStep(props.vacuumConfiguration)}>
+        <Button className={"move-step-btn"} onClick={showPreviousStep(vacuumConfiguration)}>
             <ArrowLeft size={30}/>
         </Button>
-    ), [props.vacuumConfiguration])
+    ), [vacuumConfiguration])
 
     const renderNextStepBtn = useMemo(() => (
-        <Button className={"move-step-btn"} onClick={props.showNextStep(props.vacuumConfiguration)}>
+        <Button className={"move-step-btn"} onClick={showNextStep(vacuumConfiguration)}>
             <ArrowRight size={30}/>
         </Button>
-    ), [props.vacuumConfiguration])
+    ), [vacuumConfiguration])
 
     const getRenderConfig = (): IUseVacuumLocationRenderingConfiguration => {
         return {
             vacuumImage: {
                 style: {
-                    bottom: (props.vacuumConfiguration.yLocation * props.cellSize) + "px",
-                    left: (props.vacuumConfiguration.xLocation * props.cellSize) + "px",
-                    transform: "rotate(" + props.vacuumRotation + "deg) scale(0.7)"
+                    bottom: (vacuumConfiguration.yLocation * cellSize) + "px",
+                    left: (vacuumConfiguration.xLocation * cellSize) + "px",
+                    transform: "rotate(" + vacuumRotation + "deg) scale(0.7)"
                 }
             }
         };

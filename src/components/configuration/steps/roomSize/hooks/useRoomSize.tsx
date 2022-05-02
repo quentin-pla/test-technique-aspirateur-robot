@@ -12,8 +12,9 @@ export interface IUseRoomSize {
 }
 
 const useRoomSize = (props: Pick<IRoomSizeProps, "vacuumConfiguration" | "allowRendering">): IUseRoomSize => {
+    const {allowRendering, vacuumConfiguration} = props;
     const [_cellSize, _setCellSize] = useState<IUseRoomSize["cellSize"]>(0);
-    const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IUseRoomSize["vacuumConfiguration"]>(props.vacuumConfiguration);
+    const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IUseRoomSize["vacuumConfiguration"]>(vacuumConfiguration);
     const gridRef: IUseRoomSize["gridRef"] = useRef<HTMLDivElement>(null);
 
     // Handle window resize only when component is allowed to be rendered
@@ -22,9 +23,9 @@ const useRoomSize = (props: Pick<IRoomSizeProps, "vacuumConfiguration" | "allowR
             const cellSize = getOneMeterSizeInPixels(_vacuumConfiguration.roomLength, _vacuumConfiguration.roomWidth);
             _setCellSize(cellSize);
         }
-        if (props.allowRendering) window.addEventListener('resize', handleResize);
+        if (allowRendering) window.addEventListener('resize', handleResize);
         else window.removeEventListener('resize', handleResize);
-    }, [props.allowRendering])
+    }, [allowRendering])
 
     // Update cell size on new vacuum configuration
     useEffect(() => {
@@ -34,10 +35,10 @@ const useRoomSize = (props: Pick<IRoomSizeProps, "vacuumConfiguration" | "allowR
     // Retrieve vacuum configuration from previous step
     useEffect(() => {
         updateVacuumConfiguration();
-    }, [props.allowRendering])
+    }, [allowRendering])
 
     const updateVacuumConfiguration = () => {
-        if (props.allowRendering) _setVacuumConfiguration({...props.vacuumConfiguration});
+        if (allowRendering) _setVacuumConfiguration({...vacuumConfiguration});
     }
 
     const updateCellSize = () => {

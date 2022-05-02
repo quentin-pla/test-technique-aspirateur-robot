@@ -15,12 +15,13 @@ export interface IVacuumLocationProps {
 }
 
 const VacuumLocation = (props: IVacuumLocationProps) => {
+    const {step, allowRendering} = props;
     const state = useVacuumLocation(props);
     const rendering = useVacuumLocationRendering({...props, ...state});
 
     return useMemo(() => {
         return (
-            <div id={props.step} className={"fullscreen-window " + (state.allowTransitions ? "" : "no-transition")}>
+            <div id={step} className={"fullscreen-window " + (state.allowTransitions ? "" : "no-transition")}>
                 <Container fluid className={"h-100 pb-md-5"}>
                     <Row className={"h-100"}>
                         <Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
@@ -54,7 +55,7 @@ const VacuumLocation = (props: IVacuumLocationProps) => {
                 </Container>
             </div>
         )
-    }, [props.allowRendering, state.vacuumConfiguration, state.grid, state.allowTransitions, state.cellSize]);
+    }, [allowRendering, state.vacuumConfiguration, state.grid, state.allowTransitions, state.cellSize]);
 }
 
 export default VacuumLocation;

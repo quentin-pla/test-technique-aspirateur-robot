@@ -16,8 +16,9 @@ const useVacuumLocation = (props: {
     vacuumConfiguration: IAutoVacuumConfiguration,
     allowRendering: boolean,
 }): IUseVacuumLocation => {
+    const {vacuumConfiguration, allowRendering} = props;
     const [_grid, _setGrid] = useState<Array<Array<string>>>(new Array<Array<string>>())
-    const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IAutoVacuumConfiguration>(props.vacuumConfiguration);
+    const [_vacuumConfiguration, _setVacuumConfiguration] = useState<IAutoVacuumConfiguration>(vacuumConfiguration);
     const [_cellSize, _setCellSize] = useState<number>(0);
     const [_vacuumRotation, _setVacuumRotation] = useState<number>(0);
     const [_allowTransitions, _setAllowTransitions] = useState<boolean>(false);
@@ -25,24 +26,24 @@ const useVacuumLocation = (props: {
 
     useEffect(() => {
         const handleResize = () => {
-            const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
+            const cellSize = getCellSize(vacuumConfiguration.roomLength, vacuumConfiguration.roomWidth);
             _setCellSize(cellSize);
         }
-        if (props.allowRendering) window.addEventListener('resize', handleResize);
+        if (allowRendering) window.addEventListener('resize', handleResize);
         else window.removeEventListener('resize', handleResize);
-    }, [props.allowRendering])
+    }, [allowRendering])
 
     useEffect(() => {
-        if (!props.allowRendering) return;
+        if (!allowRendering) return;
         _setAllowTransitions(false);
         setTimeout(() => _setAllowTransitions(true), 300);
-        const isXLocationOut = props.vacuumConfiguration.xLocation >= props.vacuumConfiguration.roomWidth;
-        const isYLocationOut = props.vacuumConfiguration.yLocation >= props.vacuumConfiguration.roomLength;
-        const config = {...props.vacuumConfiguration}
-        if (isXLocationOut) config.xLocation = props.vacuumConfiguration.roomWidth - 1;
-        if (isYLocationOut) config.yLocation = props.vacuumConfiguration.roomLength - 1;
+        const isXLocationOut = vacuumConfiguration.xLocation >= vacuumConfiguration.roomWidth;
+        const isYLocationOut = vacuumConfiguration.yLocation >= vacuumConfiguration.roomLength;
+        const config = {...vacuumConfiguration}
+        if (isXLocationOut) config.xLocation = vacuumConfiguration.roomWidth - 1;
+        if (isYLocationOut) config.yLocation = vacuumConfiguration.roomLength - 1;
         _setVacuumConfiguration(config);
-    }, [props.allowRendering])
+    }, [allowRendering])
 
     useEffect(() => {
         // Do not update grid if size is the same

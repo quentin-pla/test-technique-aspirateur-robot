@@ -11,11 +11,12 @@ export interface IRoomProps {
 }
 
 const Room = (props: IRoomProps) => {
+    const {gridRef} = props;
     const rendering = useRoomRendering(props);
 
     return useMemo(() => {
         return (
-            <div ref={props.gridRef} className={"room-grid"}>
+            <div ref={gridRef} className={"room-grid"}>
                 {rendering.widthButtons}
                 <div className={"room-grid-delimiter"}>
                     {rendering.lengthButtons}

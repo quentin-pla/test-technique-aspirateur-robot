@@ -44,6 +44,7 @@ export interface IUseTest {
 let animationInterval: NodeJS.Timer | null = null;
 
 const useTest = (props: IUseTestProps): IUseTest => {
+    const {vacuumConfiguration, allowRendering} = props;
     const [_grid, _setGrid] = useState<IUseTest["grid"]>(() => new Array<Array<string>>())
     const [_cellSize, _setCellSize] = useState<IUseTest["cellSize"]>(0);
     const [_allowTransitions, _setAllowTransitions] = useState<IUseTest["allowTransitions"]>(false);
@@ -56,32 +57,32 @@ const useTest = (props: IUseTestProps): IUseTest => {
 
     useEffect(() => {
         const handleResize = () => {
-            const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
+            const cellSize = getCellSize(vacuumConfiguration.roomLength, vacuumConfiguration.roomWidth);
             _setCellSize(cellSize);
         }
-        if (props.allowRendering) window.addEventListener('resize', handleResize);
+        if (allowRendering) window.addEventListener('resize', handleResize);
         else window.removeEventListener('resize', handleResize);
-    }, [props.allowRendering])
+    }, [allowRendering])
 
     useEffect(() => {
         refreshGrid();
-    }, [props.allowRendering])
+    }, [allowRendering])
 
     useEffect(() => {
         if (!!_executionResult) _setShowExecutionResult(true);
     }, [_executionResult])
 
     const refreshGrid = () => {
-        if (!props.allowRendering) return;
+        if (!allowRendering) return;
         _setAllowTransitions(false);
         setTimeout(() => _setAllowTransitions(true), 300);
-        const isSameGrid = props.vacuumConfiguration.roomLength === _grid.length &&
-            props.vacuumConfiguration.roomWidth === _grid[0].length;
+        const isSameGrid = vacuumConfiguration.roomLength === _grid.length &&
+            vacuumConfiguration.roomWidth === _grid[0].length;
         if (isSameGrid) return;
-        const rows = Array.from(Array(props.vacuumConfiguration.roomLength).keys());
-        const columns = Array.from(Array(props.vacuumConfiguration.roomWidth).keys());
+        const rows = Array.from(Array(vacuumConfiguration.roomLength).keys());
+        const columns = Array.from(Array(vacuumConfiguration.roomWidth).keys());
         const grid = rows.map(row => columns.map(column => row + "," + column));
-        const cellSize = getCellSize(props.vacuumConfiguration.roomLength, props.vacuumConfiguration.roomWidth);
+        const cellSize = getCellSize(vacuumConfiguration.roomLength, vacuumConfiguration.roomWidth);
         _setCellSize(cellSize);
         _setGrid(grid);
     }
@@ -98,9 +99,9 @@ const useTest = (props: IUseTestProps): IUseTest => {
     const animateInstruction = (instruction: VacuumInstruction) => {
         _setAnimationConfiguration(prevConfig => {
             const animationConfiguration: IAnimationConfiguration = !!prevConfig ? {...prevConfig} : {
-                x: props.vacuumConfiguration.xLocation,
-                y: props.vacuumConfiguration.yLocation,
-                angle: props.vacuumConfiguration.orientation
+                x: vacuumConfiguration.xLocation,
+                y: vacuumConfiguration.yLocation,
+                angle: vacuumConfiguration.orientation
             }
             switch (instruction) {
                 case VacuumInstruction.GoFront:
@@ -110,11 +111,11 @@ const useTest = (props: IUseTestProps): IUseTest => {
                     switch (orientation) {
                         case VacuumOrientation.North:
                             y += 1;
-                            if (y < props.vacuumConfiguration.roomLength) animationConfiguration.y = y;
+                            if (y < vacuumConfiguration.roomLength) animationConfiguration.y = y;
                             break;
                         case VacuumOrientation.East:
                             x += 1;
-                            if (x < props.vacuumConfiguration.roomWidth) animationConfiguration.x = x;
+                            if (x < vacuumConfiguration.roomWidth) animationConfiguration.x = x;
                             break;
                         case VacuumOrientation.South:
                             y -= 1;

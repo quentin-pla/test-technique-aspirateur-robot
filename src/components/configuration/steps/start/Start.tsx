@@ -12,9 +12,11 @@ interface IStartProps {
 }
 
 const Start = (props: IStartProps) => {
+    const {step, allowRendering, vacuumConfiguration, showNextStep} = props;
+
     return useMemo(() => {
         return (
-            <div id={props.step} className={"fullscreen-window"}>
+            <div id={step} className={"fullscreen-window"}>
                 <Container fluid className={"h-100"}>
                     <Row className={"h-100"}>
                         <Col className={"col-12 col-md-4 order-2 order-md-1 vacuum-background"}/>
@@ -32,7 +34,7 @@ const Start = (props: IStartProps) => {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <Button onClick={props.showNextStep(props.vacuumConfiguration)}>
+                                            <Button onClick={showNextStep(vacuumConfiguration)}>
                                                 Start configuration <ArrowRightCircleFill className={"ms-2"} size={18}/>
                                             </Button>
                                         </Col>
@@ -44,7 +46,7 @@ const Start = (props: IStartProps) => {
                 </Container>
             </div>
         )
-    }, [props.allowRendering]);
+    }, [allowRendering]);
 }
 
 export default Start;

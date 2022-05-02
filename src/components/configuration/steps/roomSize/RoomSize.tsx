@@ -15,12 +15,13 @@ export interface IRoomSizeProps {
 }
 
 const RoomSize = (props: IRoomSizeProps) => {
+    const {step, allowRendering} = props;
     const state = useRoomSize(props);
     const rendering = useRoomSizeRendering({...props, ...state});
 
     return useMemo(() => {
         return (
-            <div id={props.step} className={"fullscreen-window"} onMouseUp={clearLongPress}>
+            <div id={step} className={"fullscreen-window"} onMouseUp={clearLongPress}>
                 <Container fluid className={"h-100 pb-md-5"}>
                     <Row className={"h-100"}>
                         <Col className={"col-1 d-none d-md-flex align-items-center justify-content-center"}>
@@ -41,7 +42,7 @@ const RoomSize = (props: IRoomSizeProps) => {
                 </Container>
             </div>
         )
-    }, [props.allowRendering, state.vacuumConfiguration, state.cellSize]);
+    }, [allowRendering, state.vacuumConfiguration, state.cellSize]);
 }
 
 export default RoomSize;
