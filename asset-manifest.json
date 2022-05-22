@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/test-technique-aspirateur-robot/static/css/main.5fc12aa2.css",
-    "main.js": "/test-technique-aspirateur-robot/static/js/main.a44dca6b.js",
+    "main.js": "/test-technique-aspirateur-robot/static/js/main.af4c1a6d.js",
     "static/media/configuration-background.jpg": "/test-technique-aspirateur-robot/static/media/configuration-background.7cd8a78b702583cd6977.jpg",
     "index.html": "/test-technique-aspirateur-robot/index.html",
     "main.5fc12aa2.css.map": "/test-technique-aspirateur-robot/static/css/main.5fc12aa2.css.map",
-    "main.a44dca6b.js.map": "/test-technique-aspirateur-robot/static/js/main.a44dca6b.js.map"
+    "main.af4c1a6d.js.map": "/test-technique-aspirateur-robot/static/js/main.af4c1a6d.js.map"
   },
   "entrypoints": [
     "static/css/main.5fc12aa2.css",
-    "static/js/main.a44dca6b.js"
+    "static/js/main.af4c1a6d.js"
   ]
 }
